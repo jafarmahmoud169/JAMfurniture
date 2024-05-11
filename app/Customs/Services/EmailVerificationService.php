@@ -20,14 +20,14 @@ class EmailVerificationService
                 response()->json([
                     'status' => 'failed',
                     'message' => 'Code Expired'
-                ], 200)->send();
+                ], 200)->header('Access-Control-Allow-Origin', '*')->send();
                 exit();
             }
         } else {
             response()->json([
                 'status' => 'failed',
                 'message' => 'Invalid Code'
-            ], 200)->send();
+            ], 200)->header('Access-Control-Allow-Origin', '*')->send();
             exit();
         }
     }
@@ -39,7 +39,7 @@ class EmailVerificationService
             response()->json([
                 'status' => 'failed',
                 'message' => 'Email has already been verified'
-            ], 200)->send();
+            ], 200)->header('Access-Control-Allow-Origin', '*')->send();
             exit();
         }
     }
@@ -52,7 +52,7 @@ class EmailVerificationService
             response()->json([
                 'status' => 'failed',
                 'message' => 'User Not Found'
-            ], 200)->send();
+            ], 200)->header('Access-Control-Allow-Origin', '*')->send();
             exit();
         }
         $this->checkIfEmailIsVerified($user);
@@ -68,10 +68,11 @@ class EmailVerificationService
             response()->json([
                 'status' => 'failed',
                 'message' => 'Email verification failed ,please try again later'
-            ], 200)->send();
+            ], 200)->header('Access-Control-Allow-Origin', '*')->send();
             exit();
         }
     }
+//    ->header('Access-Control-Allow-Origin', '*')
 
 
 
@@ -102,14 +103,14 @@ class EmailVerificationService
         if ($user) {
             $this->sendVerificationCode($user);
             return response()->json([
-                'stetus' => 'success',
+                'status' => 'success',
                 'message' => 'verification link resent successfully'
-            ]);
+            ],200)->header('Access-Control-Allow-Origin', '*');
         } else {
             response()->json([
                 'status' => 'failed',
                 'message' => 'User Not Found'
-            ])->send();
+            ],200)->header('Access-Control-Allow-Origin', '*')->send();
             exit();
         }
     }

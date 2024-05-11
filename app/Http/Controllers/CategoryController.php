@@ -38,7 +38,10 @@ class categoryController extends Controller
             $category->name = $request->name;
             $category->image = '/images/categories/' . $image_name;
             $category->save();
-            return response()->json('category added', 200);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'category added'
+            ], 201);
 
         } catch (Exception $e) {
             $data = [$e, $validator->errors()];
@@ -56,9 +59,16 @@ class categoryController extends Controller
         $products = product::where('category_id', $id)->paginate(10);
 
         if ($category) {
-            return response()->json([$category,$products], 200);
+            if ($products->isNotEmpty()) {
+                return response()->json(['category'=>$category,'products'=> $products], 200);
+            } else {
+                return response()->json(['category'=>$category,'products'=> 'category contains no products'], 200);
+            }
         } else
-            return response()->json('category not found');
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'category not found'
+            ], 200);
     }
 
     /**
@@ -79,7 +89,10 @@ class categoryController extends Controller
             $image->move('images/categories', $image_name);
             $category = category::where('id', $id)->update(['image' => '/images/categories/' . $image_name]);
 
-            return response()->json('category updated', 200);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'category updated'
+            ], 200);
 
         } catch (Exception $e) {
             $data = [$e, $validator->errors()];
@@ -97,8 +110,14 @@ class categoryController extends Controller
         $category = category::find($id);
         if ($category) {
             $category->delete();
-            return response()->json('category deleted', 200);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'category deleted'
+            ], 200);
         } else
-            return response()->json('category not found');
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'category not found'
+            ], 200);
     }
 }

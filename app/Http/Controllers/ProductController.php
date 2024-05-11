@@ -18,7 +18,10 @@ class ProductController extends Controller
         if ($products) {
             return response()->json($products, 200);
         } else
-            return response()->json('no products');
+            return response()->json([
+                'status' => 'success',
+                'message' => 'no products'
+            ], 200);
     }
 
     /**
@@ -52,7 +55,10 @@ class ProductController extends Controller
             $product->save();
 
 
-            return response()->json('product added', 201);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'product added'
+            ], 201);
         } catch (Exception $e) {
             $data = [$e, $validator->errors()];
             return response()->json($data, 500);
@@ -69,7 +75,10 @@ class ProductController extends Controller
         if ($product) {
             return response()->json($product, 200);
         } else
-            return response()->json('product not found');
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'product not found'
+            ], 200);
     }
 
 
@@ -91,7 +100,7 @@ class ProductController extends Controller
 
             $image = $request->file('image');
             $image_name = time() . "." . $image->getClientOriginalName();
-            $image->move('/images/products', $image_name);
+            $image->move('images/products', $image_name);
 
             $product = product::find($id);
             $product->name = $request->name;
@@ -103,7 +112,10 @@ class ProductController extends Controller
             $product->category_id = $request->category_id;
             $product->save();
 
-            return response()->json('product updated', 200);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'product updated'
+            ], 200);
         } catch (Exception $e) {
             $data = [$e, $validator->errors()];
 
@@ -119,9 +131,15 @@ class ProductController extends Controller
         $product = product::find($id);
         if ($product) {
             $product->delete();
-            return response()->json('product deleted', 200);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'product deleted'
+            ], 200);
         } else
-            return response()->json('product not found');
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'product not found'
+            ], 200);
     }
     public function search($key)
     {
@@ -130,19 +148,25 @@ class ProductController extends Controller
             ->orderByDesc('id')
             ->get();
 
-        if ($products) {
+        if ($products->isNotEmpty()) {
             return response()->json($products, 200);
         } else
-            return response()->json('no products');
+            return response()->json([
+                'status' => 'success',
+                'message' => 'no results'
+            ], 200);
     }
     public function trendy_products()
     {
         $products = product::where('is_trendy', 1)->paginate(10);
 
-        if ($products) {
+        if ($products->isNotEmpty()) {
             return response()->json([$products], 200);
         } else
-            return response()->json('no trendy products');
+            return response()->json([
+                'status' => 'success',
+                'message' => 'no trendy products'
+            ], 200);
     }
 
 
@@ -159,14 +183,16 @@ class ProductController extends Controller
 
             if ($product) {
                 if ($product->amount >= $request->quantity) {
-                    return response()->json(['message'=>'the quantity is availabil'], 200);
+                    return response()->json(['message' => 'the quantity is availabil'], 200);
                 } else {
-                    return response()->json(['message'=>'the quantity is not availabil'], 200);
+                    return response()->json(['message' => 'the quantity is not availabil'], 200);
                 }
 
             } else
-                return response()->json('product not found');
-
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'product not found'
+                ], 200);
 
         } catch (Exception $e) {
             $data = [$e, $validator->errors()];

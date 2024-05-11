@@ -17,7 +17,7 @@ class CartController extends Controller
 
         $items = CartItem::where('user_id', $user_id)->get();
 
-        if ($items) {
+        if ($items->isNotEmpty()) {
 
             foreach ($items as $item) {
                 $product = product::where('id', $item->product_id)->get();
@@ -25,7 +25,10 @@ class CartController extends Controller
             }
             return response()->json($items, 200);
         } else {
-            return response()->json("there is no items in user's cart");
+            return response()->json([
+                'status' => 'success',
+                'message' => "there is no items in user's cart"
+            ]);
         }
 
     }
@@ -92,17 +95,19 @@ class CartController extends Controller
     }
 
 
-    public function update(Request $request){
+    public function update(Request $request)
+    {
         try {
             $validator = Validator::make($request->all(), [
                 'product_id' => 'required',
-                'quantity'=>'required'
+                'quantity' => 'required'
             ]);
             $user_id = auth()->id();
 
             $item = CartItem::where('user_id', $user_id)->where('product_id', $request->product_id)->first();
             if ($item) {
-                $item->quantity=$request->quantity;
+                $item->quantity = $request->quantity;
+                $item->save();
                 return response()->json([
                     'status' => 'success',
                     'message' => "quantity updated"
@@ -118,5 +123,6 @@ class CartController extends Controller
         } catch (Exception $e) {
             $data = [$e, $validator->errors()];
             return response()->json($data, 500);
-        }    }
+        }
+    }
 }
