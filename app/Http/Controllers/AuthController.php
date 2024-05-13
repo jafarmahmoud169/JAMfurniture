@@ -30,7 +30,7 @@ class AuthController extends Controller
                 return response()->json([
                     'status' => 'failed',
                     'message' => 'invalid credential'
-                ], 401);
+                ], 200);
             }
         } catch (Exception $e) {
             return response()->json([
@@ -70,7 +70,7 @@ class AuthController extends Controller
             }
         } catch (Exception $e) {
             return response()->json([
-                'message'=>'failed',
+                'status'=>'failed',
                 'validator errors'=>$validator->errors(),
                 'Exceptions'=>$e
             ]);
