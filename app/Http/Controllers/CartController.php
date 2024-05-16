@@ -26,13 +26,14 @@ class CartController extends Controller
             }
 
             return response()->json([
+                'status' => 'success',
                 'items'=>$items,
                 'total_price'=>$total_price,
             ], 200);
         } else {
             return response()->json([
-                'status' => 'success',
-                'message' => "there is no items in user's cart"
+                'status' => 'failed',
+                'message' => "There is no items in the cart"
             ]);
         }
 
@@ -61,11 +62,14 @@ class CartController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'message' => "product added to user's cart"
+                'message' => "Product added to the cart"
             ], 200);
         } catch (Exception $e) {
-            $data = [$e, $validator->errors()];
-            return response()->json($data, 500);
+            return response()->json([
+                'status'=>'failed',
+                'validator errors'=>$validator->errors(),
+                'Exceptions'=>$e
+            ],200);
         }
     }
 
@@ -83,19 +87,20 @@ class CartController extends Controller
                 $item->delete();
                 return response()->json([
                     'status' => 'success',
-                    'message' => "product removed from user's cart"
+                    'message' => "Product removed from the cart"
                 ], 200);
             } else {
                 return response()->json([
                     'status' => 'failed',
-                    'message' => "product is not in the cart"
+                    'message' => "Product is not in the cart"
                 ], 200);
             }
-
-
         } catch (Exception $e) {
-            $data = [$e, $validator->errors()];
-            return response()->json($data, 500);
+            return response()->json([
+                'status'=>'failed',
+                'validator errors'=>$validator->errors(),
+                'Exceptions'=>$e
+            ],200);
         }
     }
 
@@ -115,19 +120,21 @@ class CartController extends Controller
                 $item->save();
                 return response()->json([
                     'status' => 'success',
-                    'message' => "quantity updated"
+                    'message' => "Quantity updated"
                 ], 200);
             } else {
                 return response()->json([
                     'status' => 'failed',
-                    'message' => "product is not in the cart"
+                    'message' => "Product is not in the cart"
                 ], 200);
             }
 
-
         } catch (Exception $e) {
-            $data = [$e, $validator->errors()];
-            return response()->json($data, 500);
+            return response()->json([
+                'status'=>'failed',
+                'validator errors'=>$validator->errors(),
+                'Exceptions'=>$e
+            ],200);
         }
     }
 }

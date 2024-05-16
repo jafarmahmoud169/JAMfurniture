@@ -21,11 +21,17 @@ class OrderController extends Controller
         $orders = order::paginate(10);
         if ($orders) {
             foreach ($orders as $order) {
-                $order->payment_process=$order->payment;
+                $order->payment_process = $order->payment;
             }
-            return response()->json($orders, 200);
+            return response()->json([
+                'status' => 'success',
+                'orders' => $orders
+            ], 200);
         } else
-            return response()->json('no orders');
+            return response()->json([
+                'status' => 'success',
+                'orders' => 'No orders'
+            ], 200);
     }
 
     /**
@@ -34,11 +40,18 @@ class OrderController extends Controller
     public function show($id)
     {
         $order = order::find($id);
-        $items=$order->items();
+        $items = $order->items();
         if ($order) {
-            return response()->json([$order,$items], 200);
+            return response()->json([
+                'status' => 'success',
+                'order' => $order,
+                'items' => $items
+            ], 200);
         } else
-            return response()->json('order not found');
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Order not found'
+            ], 200);
     }
 
 
@@ -58,7 +71,10 @@ class OrderController extends Controller
             $items = CartItem::where('user_id', $user_id)->get();
 
             if ($items->isEmpty()) {
-                return response()->json(['status' => 'failed', 'message' => 'no items found']);
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'No items found in the cart'
+                ], 200);
             } else {
                 $total_price = 0;
                 foreach ($items as $cart_item) {
@@ -91,14 +107,18 @@ class OrderController extends Controller
                 }
 
             }
-            return response()->json('order added', 201);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Order added'
+            ], 201);
         } catch (Exception $e) {
             return response()->json([
-                'message' => 'failed',
+                'status' => 'failed',
                 'validator errors' => $validator->errors(),
                 'Exceptions' => $e
-            ]);
+            ], 200);
         }
+
     }
 
     public function get_user_orders()
@@ -106,9 +126,15 @@ class OrderController extends Controller
         $orders = Order::where('user_id', auth()->id())->get();
 
         if ($orders) {
-            return response()->json($orders, 200);
+            return response()->json([
+                'status' => 'success',
+                'orders' => $orders
+            ], 200);
         } else
-            return response()->json('no order found for this user');
+            return response()->json([
+                'status' => 'success',
+                'orders' => 'No orders'
+            ], 200);
     }
 
 
@@ -117,10 +143,15 @@ class OrderController extends Controller
         $order = Order::find($id);
         if ($order) {
             $order->update(['status' => $request->status]);
-            return response()->json('status changed successfully', 200);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Status changed successfully'
+            ], 200);
         } else {
-            return response()->json('order not found');
-        }
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Order not found'
+            ], 200);        }
 
     }
 }

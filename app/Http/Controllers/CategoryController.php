@@ -16,7 +16,11 @@ class categoryController extends Controller
     public function index()
     {
         $categories = category::all();
-        return response()->json(['categories'=>$categories], 200);
+        return response()->json([
+            ,
+            'status' => 'success',
+            'categories' => $categories
+        ], 200);
     }
 
     /**
@@ -40,13 +44,15 @@ class categoryController extends Controller
             $category->save();
             return response()->json([
                 'status' => 'success',
-                'message' => 'category added'
+                'message' => 'Category added'
             ], 201);
 
         } catch (Exception $e) {
-            $data = [$e, $validator->errors()];
-
-            return response()->json($data, 500);
+            return response()->json([
+                'status' => 'failed',
+                'validator errors' => $validator->errors(),
+                'Exceptions' => $e
+            ], 200);
         }
     }
 
@@ -60,14 +66,22 @@ class categoryController extends Controller
 
         if ($category) {
             if ($products->isNotEmpty()) {
-                return response()->json(['category'=>$category,'products'=> $products], 200);
+                return response()->json([
+                    'status' => 'success',
+                    'category' => $category,
+                    'products' => $products
+                ], 200);
             } else {
-                return response()->json(['category'=>$category,'products'=> 'category contains no products'], 200);
+                return response()->json([
+                    'status' => 'success',
+                    'category' => $category,
+                    'products' => 'Category contains no products'
+                ], 200);
             }
         } else
             return response()->json([
                 'status' => 'failed',
-                'message' => 'category not found'
+                'message' => 'Category not found'
             ], 200);
     }
 
@@ -91,13 +105,15 @@ class categoryController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'category updated'
+                'message' => 'Category updated'
             ], 200);
 
         } catch (Exception $e) {
-            $data = [$e, $validator->errors()];
-
-            return response()->json($data, 500);
+            return response()->json([
+                'status'=>'failed',
+                'validator errors'=>$validator->errors(),
+                'Exceptions'=>$e
+            ],200);
         }
 
     }
@@ -112,12 +128,12 @@ class categoryController extends Controller
             $category->delete();
             return response()->json([
                 'status' => 'success',
-                'message' => 'category deleted'
+                'message' => 'Category deleted'
             ], 200);
         } else
             return response()->json([
                 'status' => 'failed',
-                'message' => 'category not found'
+                'message' => 'Category not found'
             ], 200);
     }
 }

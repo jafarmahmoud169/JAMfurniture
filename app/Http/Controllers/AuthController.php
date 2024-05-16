@@ -29,15 +29,15 @@ class AuthController extends Controller
             } else {
                 return response()->json([
                     'status' => 'failed',
-                    'message' => 'invalid credential'
+                    'message' => 'Invalid email or password'
                 ], 200);
             }
         } catch (Exception $e) {
             return response()->json([
-                'message'=>'failed',
+                'status'=>'failed',
                 'validator errors'=>$validator->errors(),
                 'Exceptions'=>$e
-            ]);
+            ],200);
         }
 
     }
@@ -65,15 +65,15 @@ class AuthController extends Controller
             } else {
                 return response()->json([
                     'status' => 'failed',
-                    'message' => 'an error occure while trying to create user'
-                ], 500);
+                    'message' => 'An error occure while trying to create user'
+                ], 200);
             }
         } catch (Exception $e) {
             return response()->json([
                 'status'=>'failed',
                 'validator errors'=>$validator->errors(),
                 'Exceptions'=>$e
-            ]);
+            ],200);
         }
     }
     function responseWithToken($token, $user)
@@ -81,9 +81,8 @@ class AuthController extends Controller
         return response()->json([
             'status' => 'success',
             'user' => $user,
-            'access_token' => $token,
-            'type' => 'bearer'
-        ]);
+            'access_token' => $token
+        ],200);
     }
     function verifyUserEmail(Request $request)
     {
@@ -94,9 +93,11 @@ class AuthController extends Controller
             ]);
             return $this->Service->verifyEmail($request->email, $request->code);
         } catch (Exception $e) {
-            $data = [$e, $validator->errors()];
-
-            return response()->json($data);
+            return response()->json([
+                'status'=>'failed',
+                'validator errors'=>$validator->errors(),
+                'Exceptions'=>$e
+            ],200);
         }
     }
     public function resendVerificationEmailCode(Request $request)
@@ -107,9 +108,11 @@ class AuthController extends Controller
             ]);
             return $this->Service->resendCode($request->email);
         } catch (Exception $e) {
-            $data = [$e, $validator->errors()];
-
-            return response()->json($data);
+            return response()->json([
+                'status'=>'failed',
+                'validator errors'=>$validator->errors(),
+                'Exceptions'=>$e
+            ],200);
         }
     }
     public function userProfile()
@@ -122,6 +125,6 @@ class AuthController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'User successfully signed out'
-        ]);
+        ],200);
     }
 }

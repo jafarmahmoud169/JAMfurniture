@@ -13,7 +13,15 @@ class CartItem extends Model
         'quantity',
         'product_id',
     ];
-
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
 
     function user(){
         return $this->belongsTo(User::class,'user_id');

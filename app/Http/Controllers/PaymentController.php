@@ -17,22 +17,22 @@ class PaymentController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'order_id'=>'required',
+                'order_id' => 'required',
                 'phone_number' => 'required',
                 'payment_process_number' => 'required',
             ]);
             $order = Order::find($request->order_id);
             if ($order) {
 
-                $payment= new Payment();
-                $payment->user_id=auth()->id();
-                $payment->phone_number=$request->phone_number;
-                $payment->payment_process_number=$request->payment_process_number;
-                $payment->order_id=$request->order_id;
+                $payment = new Payment();
+                $payment->user_id = auth()->id();
+                $payment->phone_number = $request->phone_number;
+                $payment->payment_process_number = $request->payment_process_number;
+                $payment->order_id = $request->order_id;
                 $payment->save();
 
                 //change order status from unpaid to pending
-                $order->status='Pending';
+                $order->status = 'Pending';
                 $order->save();
 
                 return response()->json([
@@ -42,8 +42,8 @@ class PaymentController extends Controller
             } else {
                 return response()->json([
                     'status' => 'failed',
-                    'message' => 'order not found'
-                ]);
+                    'message' => 'Order not found'
+                ], 201);
             }
 
 
@@ -52,7 +52,7 @@ class PaymentController extends Controller
                 'status' => 'failed',
                 'validator errors' => $validator->errors(),
                 'Exceptions' => $e
-            ]);
+            ], 200);
         }
     }
 }
