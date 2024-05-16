@@ -20,7 +20,7 @@ class CartItem extends Model
     }
 
 
-    function products(){
-        return $this->hasMany(product::class);
+    function product(){
+        return $this->belongsTo(product::class,'product_id');
     }
 }

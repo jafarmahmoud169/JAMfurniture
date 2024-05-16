@@ -77,8 +77,8 @@ Route::controller(OrderController::class)->group(function () {
     Route::get('/order/index', 'index')->middleware('is_admin');
     Route::get('/order/show/{id}', 'show')->middleware(['auth', 'verified']);
     Route::post('/order/create', 'store')->middleware(['auth', 'verified']);
-    Route::get('get_order_items/{id}', 'get_order_items')->middleware(['auth', 'verified']);
     Route::get('get_user_orders', 'get_user_orders')->middleware(['auth', 'verified']);
     Route::post('change_order_status/{id}', 'change_order_status')->middleware('is_admin');
 
 });
+Route::post('/pay',['PaymentController','pay_for_order'])->middleware(['auth', 'verified']);

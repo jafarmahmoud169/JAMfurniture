@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Order extends Model
+class Payment extends Model
 {
     use HasFactory;
-                    /**
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -16,9 +17,9 @@ class Order extends Model
     protected $fillable = [
         'user_id',
         'total_price',
-        'status',
-        'date_of_delivery',
-        'location_id',
+        'payment_process_number',
+        'phone_number',
+        'order_id',
 
     ];
     /**
@@ -31,18 +32,12 @@ class Order extends Model
         'updated_at',
     ];
 
-    function user(){
-        return $this->belongsTo(user::class,'user_id');
-    }
-    function location(){
-        return $this->belongsTo(location::class,'location_id');
-    }
-    function items(){
-        return $this->hasMany(OrderItems::class);
-    }
-    public function payment()
+    public function user()
     {
-        return $this->hasOne('App\Models\Payment');
+        return $this->belongsTo('App\Models\User', 'user_id');
+    }
+    public function order()
+    {
+        return $this->belongsTo('App\Models\Order', 'order_id');
     }
 }
-

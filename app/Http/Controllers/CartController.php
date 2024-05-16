@@ -18,12 +18,17 @@ class CartController extends Controller
         $items = CartItem::where('user_id', $user_id)->get();
 
         if ($items->isNotEmpty()) {
-
+            $total_price=0;
             foreach ($items as $item) {
                 $product = product::where('id', $item->product_id)->get();
-                $item->product = $product['0'];
+                $item->product = $product;
+                $total_price += ($product->price)*($item->quantity);
             }
-            return response()->json($items, 200);
+
+            return response()->json([
+                'items'=>$items,
+                'total_price'=>$total_price,
+            ], 200);
         } else {
             return response()->json([
                 'status' => 'success',
