@@ -6,6 +6,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -77,8 +78,8 @@ Route::controller(OrderController::class)->group(function () {
     Route::get('/order/index', 'index')->middleware('is_admin');
     Route::get('/order/show/{id}', 'show')->middleware(['auth', 'verified']);
     Route::post('/order/create', 'store')->middleware(['auth', 'verified']);
-    Route::get('get_user_orders', 'get_user_orders')->middleware(['auth', 'verified']);
-    Route::post('change_order_status/{id}', 'change_order_status')->middleware('is_admin');
+    Route::get('/order/get_user_orders', 'get_user_orders')->middleware(['auth', 'verified']);
+    Route::post('/order/change_order_status/{id}', 'change_order_status')->middleware('is_admin');
 
 });
-Route::post('/pay',['PaymentController','pay_for_order'])->middleware(['auth', 'verified']);
+Route::post('/order/pay',[PaymentController::class,'pay_for_order'])->middleware(['auth', 'verified']);

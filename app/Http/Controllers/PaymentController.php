@@ -21,11 +21,12 @@ class PaymentController extends Controller
                 'phone_number' => 'required',
                 'payment_process_number' => 'required',
             ]);
-            $order = Order::find($request->order_id);
+            $user_id=auth()->id();
+            $order = Order::where('order_id',$request->order_id)->where('user_id',$request->user_id);
             if ($order) {
 
                 $payment = new Payment();
-                $payment->user_id = auth()->id();
+                $payment->user_id = $user_id;
                 $payment->phone_number = $request->phone_number;
                 $payment->payment_process_number = $request->payment_process_number;
                 $payment->order_id = $request->order_id;

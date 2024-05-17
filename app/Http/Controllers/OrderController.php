@@ -8,7 +8,7 @@ use App\Models\CartItem;
 use App\Models\product;
 use App\Models\location;
 use Illuminate\Http\Request;
-use validator;
+use Validator;
 use Exception;
 
 class OrderController extends Controller
@@ -18,7 +18,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = order::paginate(10);
+        $orders = order::simplePaginate(10);
         if ($orders) {
             foreach ($orders as $order) {
                 $order->payment_process = $order->payment;
@@ -125,7 +125,10 @@ class OrderController extends Controller
     {
         $orders = Order::where('user_id', auth()->id())->get();
 
-        if ($orders) {
+        if ($orders->isNotEmpty()) {
+            foreach ($orders as $order) {
+                $order->payment_process = $order->payment;
+            }
             return response()->json([
                 'status' => 'success',
                 'orders' => $orders
@@ -140,18 +143,25 @@ class OrderController extends Controller
 
     public function change_order_status(Request $request, $id)
     {
-        $order = Order::find($id);
-        if ($order) {
-            $order->update(['status' => $request->status]);
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Status changed successfully'
-            ], 200);
-        } else {
+        try {
+            $order = Order::find($id);
+            if ($order) {
+                $order->update(['status' => $request->status]);
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Status changed successfully'
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Order not found'
+                ], 200);
+            }
+        } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
-                'message' => 'Order not found'
-            ], 200);        }
-
+                'Exceptions' => $e
+            ], 200);
+        }
     }
 }
