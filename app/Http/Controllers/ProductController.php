@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\product;
 use Illuminate\Http\Request;
 use Validator;
@@ -42,6 +43,13 @@ class ProductController extends Controller
                 'image' => 'required|image',
                 'category_id' => 'required|numeric'
             ]);
+
+            if (!Category::find($request->category_id))
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Category not found'
+                ], 200);
+
             $image = $request->file('image');
             $image_name = time() . "." . $image->getClientOriginalName();
             $image->move('images/products', $image_name);
@@ -104,17 +112,26 @@ class ProductController extends Controller
                 'amount' => 'required|numeric',
                 'discount' => 'required|numeric',
                 'image' => 'required|string',
-                'category_id' => 'required|numeric'
+                'category_id' => 'required|numeric',
+                'is_trendy' => 'required'
             ]);
+
+            if (!Category::find($request->category_id))
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Category not found'
+                ], 200);
 
             $image = $request->file('image');
             $image_name = time() . "." . $image->getClientOriginalName();
             $image->move('images/products', $image_name);
 
             $product = product::find($id);
+            if($product){
             $product->name = $request->name;
             $product->details = $request->details;
             $product->price = $request->price;
+            $product->is_trendy = $request->is_trendy;
             $product->amount = $request->amount;
             $product->discount = $request->discount;
             $product->image = "/iamges/product/" . $image_name;
@@ -125,6 +142,12 @@ class ProductController extends Controller
                 'status' => 'success',
                 'message' => 'Product updated'
             ], 200);
+        }else{
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Product not found'
+            ], 200);
+        }
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',

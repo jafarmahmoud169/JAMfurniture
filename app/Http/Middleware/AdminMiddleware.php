@@ -16,12 +16,18 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (! auth()->check()) {
-            return response()->json('Unauthorized', 401);
+        if (!auth()->check()) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Unauthorized'
+            ], 401);
         } elseif (auth()->user()->is_admin) {
             return $next($request);
         } else {
-            return response()->json('Forbidden: you are not an admin', 403);
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Forbidden: you are not an admin'
+            ], 403);
         }
     }
 }

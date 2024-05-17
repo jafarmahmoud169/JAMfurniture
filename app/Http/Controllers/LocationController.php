@@ -53,10 +53,10 @@ class LocationController extends Controller
             ], 201);
         } catch (Exception $e) {
             return response()->json([
-                'status'=>'failed',
-                'validator errors'=>$validator->errors(),
-                'Exceptions'=>$e
-            ],200);
+                'status' => 'failed',
+                'validator errors' => $validator->errors(),
+                'Exceptions' => $e
+            ], 200);
         }
     }
 
@@ -73,35 +73,37 @@ class LocationController extends Controller
             ]);
 
             $location = Location::find($id);
-            if ($location->user_id != Auth::id()) {
-                return response()->json([
-                    'status' => 'failed',
-                    'message' => 'You do not have permission to edit this location'
-                ], 200);
-            }
+
             if ($location) {
+                if ($location->user_id != Auth::id()) {
+                    return response()->json([
+                        'status' => 'failed',
+                        'message' => 'You do not have permission to edit this location'
+                    ], 200);
+                } else {
 
-                $location->city = $request->city;
-                $location->street = $request->street;
-                $location->building = $request->building;
-                $location->save();
+                    $location->city = $request->city;
+                    $location->street = $request->street;
+                    $location->building = $request->building;
+                    $location->save();
 
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Location updated'
-                ], 200);
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'Location updated'
+                    ], 200);
+                }
             } else
                 return response()->json([
                     'status' => 'failed',
                     'message' => 'Location not found'
                 ], 200);
-            } catch (Exception $e) {
-                return response()->json([
-                    'status'=>'failed',
-                    'validator errors'=>$validator->errors(),
-                    'Exceptions'=>$e
-                ],200);
-            }
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'failed',
+                'validator errors' => $validator->errors(),
+                'Exceptions' => $e
+            ], 200);
+        }
     }
 
     /**
@@ -110,18 +112,20 @@ class LocationController extends Controller
     public function destroy($id)
     {
         $location = Location::find($id);
-        if ($location->user_id != Auth::id()) {
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'You do not have permission to delete this location'
-            ], 200);
-        }
+
         if ($location) {
-            $location->delete();
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Location deleted'
-            ], 200);
+            if ($location->user_id != Auth::id()) {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'You do not have permission to delete this location'
+                ], 200);
+            } else {
+                $location->delete();
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Location deleted'
+                ], 200);
+            }
         } else
             return response()->json([
                 'status' => 'failed',

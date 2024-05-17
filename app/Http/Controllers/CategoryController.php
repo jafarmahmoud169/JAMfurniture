@@ -17,7 +17,6 @@ class categoryController extends Controller
     {
         $categories = category::all();
         return response()->json([
-            ,
             'status' => 'success',
             'categories' => $categories
         ], 200);
@@ -95,19 +94,24 @@ class categoryController extends Controller
                 'name' => 'required|string|unique:categories,name',
                 'image' => 'required|image'
             ]);
-
-            $category = category::where('id', $id)->update(['name' => $request->name]);
+            $category = category::find($id);
+            if($category){
+            $category->name= $request->name;
 
             $image = $request->file('image');
             $image_name = time() . "." . $image->getClientOriginalName();
             $image->move('images/categories', $image_name);
-            $category = category::where('id', $id)->update(['image' => '/images/categories/' . $image_name]);
+            $category ->image='/images/categories/' . $image_name;
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Category updated'
             ], 200);
-
+        }else{
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Category not found'
+            ], 200);        }
         } catch (Exception $e) {
             return response()->json([
                 'status'=>'failed',
