@@ -10,7 +10,7 @@ use App\Models\location;
 use Illuminate\Http\Request;
 use Validator;
 use Exception;
-
+use Auth;
 class OrderController extends Controller
 {
     /**
@@ -21,7 +21,7 @@ class OrderController extends Controller
         $orders = order::simplePaginate(10);
         if ($orders) {
             foreach ($orders as $order) {
-                $order->payment_process = $order->payment;
+                $order->payment;
             }
             return response()->json([
                 'status' => 'success',
@@ -40,12 +40,18 @@ class OrderController extends Controller
     public function show($id)
     {
         $order = order::find($id);
-        $items = $order->items();
+
+
         if ($order) {
+            $order->payment;
+            $order->location;
+            foreach ($order->items as $item) {
+                $item->product;
+            }
             return response()->json([
                 'status' => 'success',
                 'order' => $order,
-                'items' => $items
+                //'items' => $items
             ], 200);
         } else
             return response()->json([
@@ -127,7 +133,8 @@ class OrderController extends Controller
 
         if ($orders->isNotEmpty()) {
             foreach ($orders as $order) {
-                $order->payment_process = $order->payment;
+                $order->payment;
+                $order->location;
             }
             return response()->json([
                 'status' => 'success',
@@ -163,5 +170,28 @@ class OrderController extends Controller
                 'Exceptions' => $e
             ], 200);
         }
+    }
+    public function destroy($id)
+    {
+        $order = order::find($id);
+
+        if ($order) {
+            if ($order->user_id != Auth::id()) {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'You do not have permission to delete this order'
+                ], 200);
+            } else {
+                $order->delete();
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'order deleted'
+                ], 200);
+            }
+        } else
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'order not found'
+            ], 200);
     }
 }

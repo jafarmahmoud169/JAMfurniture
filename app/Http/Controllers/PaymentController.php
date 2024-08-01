@@ -13,33 +13,39 @@ class PaymentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function pay_for_order(Request $request)
+    public function pay_for_order(Request $request, $id)
     {
         try {
             $validator = Validator::make($request->all(), [
-                'order_id' => 'required',
                 'phone_number' => 'required',
                 'payment_process_number' => 'required',
             ]);
-            $user_id=auth()->id();
-            $order = Order::where('order_id',$request->order_id)->where('user_id',$request->user_id);
+            $user_id = auth()->id();
+            $order = Order::find($id);
             if ($order) {
+                if ($order->user_id != $user_id) {
+                    return response()->json([
+                        'status' => 'failed',
+                        'message' => 'You do not have permission to pay for this order'
+                    ], 200);
+                } else {
 
-                $payment = new Payment();
-                $payment->user_id = $user_id;
-                $payment->phone_number = $request->phone_number;
-                $payment->payment_process_number = $request->payment_process_number;
-                $payment->order_id = $request->order_id;
-                $payment->save();
+                    $payment = new Payment();
+                    $payment->user_id = $user_id;
+                    $payment->phone_number = $request->phone_number;
+                    $payment->payment_process_number = $request->payment_process_number;
+                    $payment->order_id = $id;
+                    $payment->save();
 
-                //change order status from unpaid to pending
-                $order->status = 'Pending';
-                $order->save();
+                    //change order status from unpaid to pending
+                    $order->status = 'Pending';
+                    $order->save();
 
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Order paied successfully'
-                ]);
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'Order paied successfully'
+                    ]);
+                }
             } else {
                 return response()->json([
                     'status' => 'failed',
