@@ -83,7 +83,7 @@ class EmailVerificationService
             $checkCodeExist->delete();
 
 
-        $verificationCode = 111111;
+        $verificationCode = rand(100000,999999);
 
 
         $saveCode = EmailVerificationCode::create([
