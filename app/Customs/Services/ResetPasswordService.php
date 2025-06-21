@@ -3,11 +3,12 @@ namespace App\Customs\Services;
 
 use App\Models\EmailVerificationCode;
 use App\Models\User;
-use App\Notifications\EmailVerificationNotification;
+use App\Notifications\ResetPasswordNotification;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Notification;
+use Hash;
 
-class EmailVerificationService
+class ResetPasswordService
 {
     public function verifyCode($email, $Code)
     {
@@ -33,19 +34,10 @@ class EmailVerificationService
     }
 
 
-    public function checkIfEmailIsVerified($user)
-    {
-        if ($user->email_verified_at) {
-            response()->json([
-                'status' => 'failed',
-                'message' => 'Email has already been verified'
-            ], 200)->header('Access-Control-Allow-Origin', '*')->send();
-            exit();
-        }
-    }
 
 
-    public function verifyEmail($email, $Code)
+
+    public function resetPassowrd($email, $code ,$new_password)
     {
         $user = User::where('email', $email)->first();
         if (!$user) {
@@ -55,56 +47,59 @@ class EmailVerificationService
             ], 200)->header('Access-Control-Allow-Origin', '*')->send();
             exit();
         }
-        $this->checkIfEmailIsVerified($user);
-        $verifiedCode = $this->verifyCode($email, $Code);
-        if ($user->markEmailAsVerified()) {
+
+
+        $verifiedCode = $this->verifyCode($email, $code);
+
+        $updatePassword=$user->update(['password'=> Hash::make($new_password)]);
+
+        if ($updatePassword) {
             $verifiedCode->delete();
             response()->json([
                 'status' => 'success',
-                'message' => 'Email has been verified successfully'
+                'message' => 'Password has been Reset successfully'
             ], 200)->header('Access-Control-Allow-Origin', '*')->send();
             exit();
         } else {
             response()->json([
                 'status' => 'failed',
-                'message' => 'Email verification failed ,please try again later'
+                'message' => 'Password Reset failed , please try again later'
             ], 200)->header('Access-Control-Allow-Origin', '*')->send();
             exit();
         }
     }
-//    ->header('Access-Control-Allow-Origin', '*')
 
 
 
-    public function generateVerificationCode(string $email)
+    public function generateResetCode(string $email)
     {
         $checkCodeExist = EmailVerificationCode::where('email', $email)->first();
         if ($checkCodeExist)
             $checkCodeExist->delete();
 
 
-        $verificationCode = rand(100000,999999);
+        $ResetCode = rand(100000,999999);
 
 
         $saveCode = EmailVerificationCode::create([
             'email' => $email,
-            'code' => $verificationCode,
-            'expired_at' => now()->addMinutes(60)
+            'code' => $ResetCode,
+            'expired_at' => now()->addMinutes(10)
         ]);
         if ($saveCode) {
-            return $verificationCode;
+            return $ResetCode;
         }
     }
 
 
-    public function resendCode($email)
+    public function resendResetCode($email)
     {
         $user = User::where('email', $email)->first();
         if ($user) {
-            $this->sendVerificationCode($user);
+            $this->sendResetCode($user);
             return response()->json([
                 'status' => 'success',
-                'message' => 'verification code resent successfully'
+                'message' => 'Password Reset Code resent successfully'
             ],200)->header('Access-Control-Allow-Origin', '*');
         } else {
             response()->json([
@@ -118,8 +113,8 @@ class EmailVerificationService
 
 
 
-    function sendVerificationCode(object $user)
+    function sendResetCode(object $user)
     {
-        Notification::send($user, new EmailVerificationNotification($this->generateVerificationCode($user->email)));
+        Notification::send($user, new ResetPasswordNotification($this->generateResetCode($user->email)));
     }
 }

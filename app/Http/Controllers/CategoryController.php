@@ -30,16 +30,12 @@ class categoryController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'name' => 'required|string|unique:categories,name',
-                'image' => 'required'
             ]);
 
-            $image = $request->image;
-            $image_name = time() . "." . $image->getClientOriginalName();
-            $image->move('images/categories', $image_name);
+
 
             $category = new category;
             $category->name = $request->name;
-            $category->image = '/images/categories/' . $image_name;
             $category->save();
             return response()->json([
                 'status' => 'success',
@@ -92,35 +88,41 @@ class categoryController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'name' => 'required|string|unique:categories,name',
-                'image' => 'required|image'
             ]);
-            $category = category::find($id);
-            if($category){
-            $category->name= $request->name;
 
-            $image = $request->file('image');
-            $image_name = time() . "." . $image->getClientOriginalName();
-            $image->move('images/categories', $image_name);
-            $category ->image='/images/categories/' . $image_name;
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
+                ], 200);
+            }
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Category updated'
-            ], 200);
-        }else{
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'Category not found'
-            ], 200);        }
+            $category = Category::find($id);
+
+            if ($category) {
+                $category->name = $request->name;
+                $category->save();
+
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Category updated'
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Category not found'
+                ], 200);
+            }
         } catch (Exception $e) {
             return response()->json([
-                'status'=>'failed',
-                'validator errors'=>$validator->errors(),
-                'Exceptions'=>$e
-            ],200);
+                'status' => 'failed',
+                'message' => 'Something went wrong',
+                'exception' => $e->getMessage()
+            ], 500);
         }
-
     }
+
 
     /**
      * Remove the specified resource from storage.

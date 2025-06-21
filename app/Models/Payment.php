@@ -17,8 +17,9 @@ class Payment extends Model
     protected $fillable = [
         'user_id',
         'total_price',
+        'payment_gateway',
         'payment_process_number',
-        'phone_number',
+        'payment_phone_number',
         'order_id',
 
     ];
@@ -28,7 +29,6 @@ class Payment extends Model
      * @var array
      */
     protected $hidden = [
-        'created_at',
         'updated_at',
     ];
 

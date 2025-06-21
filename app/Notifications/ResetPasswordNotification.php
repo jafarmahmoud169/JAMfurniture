@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class EmailVerificationNotification extends Notification
+class ResetPasswordNotification extends Notification
 {
     use Queueable;
     protected $code;
@@ -32,22 +32,17 @@ class EmailVerificationNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->subject('Verify Email Address')
+                    ->subject('Reset Your Password')
                     ->line('Dear '.$notifiable->first_name)
-                    ->line('Thank you for signing up with JAMfurniture! We’re excited to have you as part of our community.
-                    To complete your registration, please verify your email address by usig the code below:')
+                    ->line('We received a request to reset the password for your account.
+                    Please use the following reset code to proceed:')
                     ->line('')
-                    ->line('Verification Code : '.$this->code)
+                    ->line('Reset Code : '.$this->code)
                     ->line('')
-                    ->line('If you did not sign up for an account on JAMfurniture, please ignore this email.');
+                    ->line('This code will expire in 10 minutes. If you did not request a password reset, please ignore this message , your account is safe.');
     }
 
-    // public function toMail(object $notifiable): MailMessage
-    // {
-    //     return (new MailMessage)
-    //         ->subject('Verify Email Address')
-    //         ->view('emailVerification', ['code' => $this->code, 'name' => $notifiable->name]);
-    // }
+
 
     /**
      * Get the array representation of the notification.

@@ -39,9 +39,12 @@ class ProductController extends Controller
                 'details' => 'required|string',
                 'price' => 'required|numeric',
                 'amount' => 'required|numeric',
-                'discount' => 'numeric',
+                'discount' => 'required|numeric',
                 'image' => 'required|image',
-                'category_id' => 'required|numeric'
+                'category_id' => 'required|numeric',
+                'dimensions'=>'required',
+                'colors'=>'required',
+                'material'=>'required'
             ]);
 
             if (!Category::find($request->category_id))
@@ -63,6 +66,11 @@ class ProductController extends Controller
             $product->amount = $request->amount;
             $product->discount = $request->discount;
             $product->category_id = $request->category_id;
+            $product->dimensions = $request->dimensions;
+            $product->colors = $request->colors;
+            $product->material = $request->material;
+
+
             $product->save();
 
 
@@ -85,11 +93,12 @@ class ProductController extends Controller
      */
     public function show(product $product, $id)
     {
-        $product = product::find($id);
+        $product = product::with('ratings')->find($id);
         if ($product) {
             return response()->json([
                 'status' => 'success',
-                'product' => $product
+                'product' => $product,
+                'rating' => $product->averageRating()
             ], 200);
         } else
             return response()->json([
@@ -102,57 +111,126 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    // public function update(Request $request, $id)
+    // {
+    //     try {
+    //         $validator = Validator::make($request->all(), [
+    //             'name' => 'required|string',
+    //             'details' => 'required|string',
+    //             'price' => 'required|numeric',
+    //             'amount' => 'required|numeric',
+    //             'discount' => 'required|numeric',
+    //             'image' => 'required|string',
+    //             'category_id' => 'required|numeric',
+    //             'is_trendy' => 'required',
+    //             'dimensions'=>'required',
+    //             'colors'=>'required',
+    //             'material'=>'required'
+    //         ]);
+
+            // if (!Category::find($request->category_id))
+            //     return response()->json([
+            //         'status' => 'failed',
+            //         'message' => 'Category not found'
+            //     ], 200);
+
+    //         $image = $request->file('image');
+    //         $image_name = time() . "." . $image->getClientOriginalName();
+    //         $image->move('images/products', $image_name);
+
+    //         $product = product::find($id);
+    //         if($product){
+    //         $product->name = $request->name;
+    //         $product->details = $request->details;
+    //         $product->price = $request->price;
+    //         $product->is_trendy = $request->is_trendy;
+    //         $product->amount = $request->amount;
+    //         $product->discount = $request->discount;
+    //         $product->image = "/iamges/product/" . $image_name;
+    //         $product->category_id = $request->category_id;
+    //         $product->dimensions = $request->dimensions;
+    //         $product->colors = $request->colors;
+    //         $product->material = $request->material;
+    //         $product->save();
+
+    //         return response()->json([
+    //             'status' => 'success',
+    //             'message' => 'Product updated'
+    //         ], 200);
+    //     }else{
+    //         return response()->json([
+    //             'status' => 'failed',
+    //             'message' => 'Product not found'
+    //         ], 200);
+    //     }
+    //     } catch (Exception $e) {
+    //         return response()->json([
+    //             'status' => 'failed',
+    //             'validator errors' => $validator->errors(),
+    //             'Exceptions' => $e
+    //         ], 200);
+    //     }
+    // }
     public function update(Request $request, $id)
     {
         try {
             $validator = Validator::make($request->all(), [
-                'name' => 'required|string',
-                'details' => 'required|string',
-                'price' => 'required|numeric',
-                'amount' => 'required|numeric',
-                'discount' => 'required|numeric',
-                'image' => 'required|string',
-                'category_id' => 'required|numeric',
-                'is_trendy' => 'required'
+                'name' => 'sometimes|string',
+                'details' => 'sometimes|string',
+                'price' => 'sometimes|numeric',
+                'amount' => 'sometimes|numeric',
+                'discount' => 'sometimes|numeric',
+                'image' => 'sometimes|image',
+                'category_id' => 'sometimes|numeric|exists:categories,id',
+                'is_trendy' => 'sometimes|boolean',
+                'dimensions' => 'sometimes|string',
+                'colors' => 'sometimes|string',
+                'material' => 'sometimes|string'
             ]);
 
-            if (!Category::find($request->category_id))
+            if ($validator->fails()) {
                 return response()->json([
                     'status' => 'failed',
-                    'message' => 'Category not found'
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
                 ], 200);
+            }
 
-            $image = $request->file('image');
-            $image_name = time() . "." . $image->getClientOriginalName();
-            $image->move('images/products', $image_name);
+            $product = Product::find($id);
+            if (!$product) {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Product not found'
+                ], 200);
+            }
 
-            $product = product::find($id);
-            if($product){
-            $product->name = $request->name;
-            $product->details = $request->details;
-            $product->price = $request->price;
-            $product->is_trendy = $request->is_trendy;
-            $product->amount = $request->amount;
-            $product->discount = $request->discount;
-            $product->image = "/iamges/product/" . $image_name;
-            $product->category_id = $request->category_id;
+            // Handle image upload if present
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $image_name = time() . "_" . $image->getClientOriginalName();
+                $image->move(public_path('images/products'), $image_name);
+                $product->image = "/images/products/" . $image_name;
+            }
+
+            // Update other fields
+            $product->fill($request->only([
+                'name', 'details', 'price', 'amount', 'discount',
+                'category_id', 'is_trendy', 'dimensions', 'colors', 'material'
+            ]));
+
             $product->save();
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Product updated'
+                'message' => 'Product updated successfully',
+                'product' => $product
             ], 200);
-        }else{
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'Product not found'
-            ], 200);
-        }
+
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
-                'validator errors' => $validator->errors(),
-                'Exceptions' => $e
+                'message' => 'Unexpected error',
+                'exception' => $e->getMessage()
             ], 200);
         }
     }
@@ -211,41 +289,20 @@ class ProductController extends Controller
 
 
 
-    public function check_availability(Request $request)
+
+    public function offers_products()
     {
-        try {
-            $validator = Validator::make($request->all(), [
-                'product_id' => 'required',
-                'quantity' => 'required'
-            ]);
-            $product = product::find($request->product_id);
+        $products = product::where('discount','>',0)->paginate(10);
 
-
-            if ($product) {
-                if ($product->amount >= $request->quantity) {
-                    return response()->json([
-                        'status' => 'success',
-                        'message' => 'The quantity is availabil'
-                    ], 200);
-                } else {
-                    return response()->json([
-                        'status' => 'success',
-                        'message' => 'The quantity is not availabil'
-                    ], 200);
-                }
-
-            } else
-                return response()->json([
-                    'status' => 'failed',
-                    'message' => 'Product not found'
-                ], 200);
-
-        } catch (Exception $e) {
+        if ($products->isNotEmpty()) {
             return response()->json([
-                'status' => 'failed',
-                'validator errors' => $validator->errors(),
-                'Exceptions' => $e
+                'status' => 'success',
+                'products' => $products
             ], 200);
-        }
+        } else
+            return response()->json([
+                'status' => 'success',
+                'products' => 'No offers'
+            ], 200);
     }
 }

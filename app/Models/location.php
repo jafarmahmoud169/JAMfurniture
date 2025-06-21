@@ -17,7 +17,10 @@ class location extends Model
         'city',
         'street',
         'building',
-        'user_id'
+        'user_id',
+        "more_details",
+        "zip_code",
+        "apartment_number"
     ];
     /**
      * The attributes that should be hidden for arrays.

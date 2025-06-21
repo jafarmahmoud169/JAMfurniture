@@ -13,6 +13,29 @@ use Exception;
 use Auth;
 class OrderController extends Controller
 {
+    public function check_availability($product_id, $quantity)
+    {
+        $product = product::find($product_id);
+
+        if (!$product) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Product not found'
+            ], 200);
+        }
+
+        if ($product->amount < $quantity) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'The quantity of product ' . $product_id . ' is not available',
+                'product_id' => $product_id,
+                'available_quantity' => $product->amount
+            ], 200);
+        }
+
+        return null;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -68,51 +91,50 @@ class OrderController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
+                'order_items' => 'required',
                 'date_of_delivery' => 'required|string',
                 'location_id' => 'required',
             ]);
 
-            //getting order items from user's cart items
             $user_id = auth()->id();
-            $items = CartItem::where('user_id', $user_id)->get();
+            //check avilability then calculate total price
+            $total_price = 0;
+            foreach ($request["order_items"] as $order_item) {
 
-            if ($items->isEmpty()) {
-                return response()->json([
-                    'status' => 'failed',
-                    'message' => 'No items found in the cart'
-                ], 200);
-            } else {
-                $total_price = 0;
-                foreach ($items as $cart_item) {
-                    $total_price += ($cart_item->product->price) * ($cart_item->quantity);
-                }
-                //saving order info in orders table
-                $order = new Order();
-                $order->total_price = $total_price;
-                $order->date_of_delivery = $request->date_of_delivery;
-                $order->user_id = $user_id;
-                $order->location_id = $request->location_id;
-                $order->save();
-
-                //saving order items in its table
-                foreach ($items as $order_item) {
-                    $item = new Orderitems();
-                    $item->order_id = $order->id;
-                    $item->product_id = $order_item->product_id;
-                    $item->quantity = $order_item->quantity;
-                    $item->price = $order_item->product->price;
-                    $item->save();
-
-                    //changing product ammount
-                    $product = product::where('id', $order_item->product_id)->first();
-                    $product->amount -= $order_item->quantity;
-                    $product->save();
-
-                    //delete the item from the cart after order it
-                    $order_item->delete();
+                $response = $this->check_availability($order_item["product_id"], $order_item["quantity"]);
+                if ($response) {
+                    return $response;
                 }
 
+                $final_price = product::find($order_item["product_id"])->final_price();
+
+                $total_price += ($final_price) * ($order_item['quantity']);
             }
+
+            //saving order info in orders table
+            $order = new Order();
+            $order->total_price = $total_price;
+            $order->date_of_delivery = $request->date_of_delivery;
+            $order->user_id = $user_id;
+            $order->location_id = $request->location_id;
+            $order->save();
+
+            //saving order items in its table
+            foreach ($request->order_items as $order_item) {
+                $item = new Orderitems();
+                $item->order_id = $order->id;
+                $item->product_id = $order_item["product_id"];
+                $item->quantity = $order_item["quantity"];
+                $item->price = product::find($order_item["product_id"])->final_price();
+                $item->save();
+
+                //changing product ammount
+                $product = product::where('id', $order_item["product_id"])->first();
+                $product->amount -= $order_item["quantity"];
+                $product->save();
+            }
+
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Order added'
@@ -135,6 +157,7 @@ class OrderController extends Controller
             foreach ($orders as $order) {
                 $order->payment;
                 $order->location;
+                $order->items;
             }
             return response()->json([
                 'status' => 'success',
@@ -194,4 +217,5 @@ class OrderController extends Controller
                 'message' => 'order not found'
             ], 200);
     }
+
 }

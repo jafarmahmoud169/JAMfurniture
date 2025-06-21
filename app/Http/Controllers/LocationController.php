@@ -40,12 +40,18 @@ class LocationController extends Controller
                 'city' => 'required',
                 'street' => 'required',
                 'building' => 'required',
+                'more_details'=> 'required',
+                'zip_code'=> 'required',
+                'apartment_number'=> 'required'
             ]);
             location::create([
                 'city' => $request->city,
                 'street' => $request->street,
                 'building' => $request->building,
                 'user_id' => Auth::id(),
+                'more_details'=> $request->more_details,
+                'zip_code'=> $request->zip_code,
+                'apartment_number'=> $request->apartment_number
             ]);
             return response()->json([
                 'status' => 'success',
@@ -70,6 +76,9 @@ class LocationController extends Controller
                 'city' => 'required',
                 'street' => 'required',
                 'building' => 'required',
+                'more_details'=> 'required',
+                'zip_code'=> 'required',
+                'apartment_number'=> 'required'
             ]);
 
             $location = Location::find($id);
@@ -85,6 +94,9 @@ class LocationController extends Controller
                     $location->city = $request->city;
                     $location->street = $request->street;
                     $location->building = $request->building;
+                    $location->more_details = $request->more_details;
+                    $location->zip_code = $request->zip_code;
+                    $location->apartment_number = $request->apartment_number;
                     $location->save();
 
                     return response()->json([

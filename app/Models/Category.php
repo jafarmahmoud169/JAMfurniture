@@ -14,8 +14,7 @@ class Category extends Model
      * @var array
      */
     protected $fillable = [
-        'name',
-        'image',
+        'name'
     ];
     /**
      * The attributes that should be hidden for arrays.
