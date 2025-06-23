@@ -37,7 +37,7 @@ class ResetPasswordService
 
 
 
-    public function resetPassowrd($email, $code ,$new_password)
+    public function resetPassowrd($email, $code, $new_password)
     {
         $user = User::where('email', $email)->first();
         if (!$user) {
@@ -51,7 +51,7 @@ class ResetPasswordService
 
         $verifiedCode = $this->verifyCode($email, $code);
 
-        $updatePassword=$user->update(['password'=> Hash::make($new_password)]);
+        $updatePassword = $user->update(['password' => Hash::make($new_password)]);
 
         if ($updatePassword) {
             $verifiedCode->delete();
@@ -78,7 +78,7 @@ class ResetPasswordService
             $checkCodeExist->delete();
 
 
-        $ResetCode = rand(100000,999999);
+        $ResetCode = rand(100000, 999999);
 
 
         $saveCode = EmailVerificationCode::create([
@@ -100,12 +100,12 @@ class ResetPasswordService
             return response()->json([
                 'status' => 'success',
                 'message' => 'Password Reset Code resent successfully'
-            ],200)->header('Access-Control-Allow-Origin', '*');
+            ], 200)->header('Access-Control-Allow-Origin', '*');
         } else {
             response()->json([
                 'status' => 'failed',
                 'message' => 'User Not Found'
-            ],200)->header('Access-Control-Allow-Origin', '*')->send();
+            ], 200)->header('Access-Control-Allow-Origin', '*')->send();
             exit();
         }
     }
@@ -116,5 +116,37 @@ class ResetPasswordService
     function sendResetCode(object $user)
     {
         Notification::send($user, new ResetPasswordNotification($this->generateResetCode($user->email)));
+    }
+
+
+
+
+
+    //the selly function modar asked for to just verify the code before using the reset endpoint
+    public function verifyResetCode($email, $Code)
+    {
+        $Code = EmailVerificationCode::where('email', $email)->where('code', $Code)->first();
+        if ($Code) {
+            if ($Code->expired_at >= now()) {
+                response()->json([
+                    'status' => 'success',
+                    'message' => 'Code verified sucessfuly'
+                ], 200)->header('Access-Control-Allow-Origin', '*')->send();
+                exit();
+            } else {
+                $Code->delete();
+                response()->json([
+                    'status' => 'failed',
+                    'message' => 'Code Expired'
+                ], 200)->header('Access-Control-Allow-Origin', '*')->send();
+                exit();
+            }
+        } else {
+            response()->json([
+                'status' => 'failed',
+                'message' => 'Invalid Code'
+            ], 200)->header('Access-Control-Allow-Origin', '*')->send();
+            exit();
+        }
     }
 }

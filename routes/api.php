@@ -39,6 +39,7 @@ Route::group([
 
     Route::post('auth/forgot-password', [AuthController::class, 'sendResetCode']);
     Route::post('auth/resend-reset-code', [AuthController::class, 'resendResetCode']);
+    Route::post('auth/verify-reset-code', [AuthController::class, 'verifyResetCode']);
     Route::post('auth/reset-password', [AuthController::class, 'resetPassword']);
 
 });

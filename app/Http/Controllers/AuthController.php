@@ -188,7 +188,7 @@ class AuthController extends Controller
                 $service->sendResetCode($user);
                 return response()->json([
                     'status' => 'success',
-                    'message' => 'Password Reset Code resent successfully'
+                    'message' => 'Password Reset Code sent successfully'
                 ], 200)->header('Access-Control-Allow-Origin', '*');
             } else {
                 response()->json([
@@ -215,6 +215,23 @@ class AuthController extends Controller
             $service = new ResetPasswordService;
 
             return $service->resendresetCode($request->email);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'failed',
+                'validator errors' => $validator->errors(),
+                'Exceptions' => $e
+            ], 200);
+        }
+    }    public function verifyResetCode(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'email' => 'required|email:filter',
+                'code'=>'required|max:10'
+            ]);
+            $service = new ResetPasswordService;
+
+            return $service->verifyResetCode($request->email,$request->code);
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
