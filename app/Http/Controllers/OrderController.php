@@ -21,7 +21,7 @@ class OrderController extends Controller
             return response()->json([
                 'status' => 'failed',
                 'message' => 'Product not found'
-            ], 200);
+            ], 400);
         }
 
         if ($product->amount < $quantity) {
@@ -30,7 +30,7 @@ class OrderController extends Controller
                 'message' => 'The quantity of product ' . $product_id . ' is not available',
                 'product_id' => $product_id,
                 'available_quantity' => $product->amount
-            ], 200);
+            ], 400);
         }
 
         return null;
@@ -53,7 +53,7 @@ class OrderController extends Controller
         } else
             return response()->json([
                 'status' => 'success',
-                'orders' => 'No orders'
+                'orders' => 'No orders yet'
             ], 200);
     }
 
@@ -80,7 +80,7 @@ class OrderController extends Controller
             return response()->json([
                 'status' => 'failed',
                 'message' => 'Order not found'
-            ], 200);
+            ], 400);
     }
 
 
@@ -149,7 +149,7 @@ class OrderController extends Controller
             return response()->json([
                 'status' => 'failed',
                 'Exceptions' => $e
-            ], 200);
+            ], 400);
         }
 
     }
@@ -200,13 +200,13 @@ class OrderController extends Controller
                 return response()->json([
                     'status' => 'failed',
                     'message' => 'Order not found'
-                ], 200);
+                ], 400);
             }
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
                 'Exceptions' => $e
-            ], 200);
+            ], 400);
         }
     }
     public function destroy($id)
@@ -218,7 +218,7 @@ class OrderController extends Controller
                 return response()->json([
                     'status' => 'failed',
                     'message' => 'You do not have permission to delete this order'
-                ], 200);
+                ], 403);
             } else {
                 $order->delete();
                 return response()->json([
@@ -230,7 +230,7 @@ class OrderController extends Controller
             return response()->json([
                 'status' => 'failed',
                 'message' => 'order not found'
-            ], 200);
+            ], 400);
     }
 
 }

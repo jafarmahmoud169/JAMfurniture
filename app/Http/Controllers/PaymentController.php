@@ -35,7 +35,7 @@ class PaymentController extends Controller
                     return response()->json([
                         'status' => 'failed',
                         'message' => 'You do not have permission to pay for this order'
-                    ], 200);
+                    ], 403);
                 } else {
 
                     $payment = new Payment();
@@ -59,7 +59,7 @@ class PaymentController extends Controller
                 return response()->json([
                     'status' => 'failed',
                     'message' => 'Order not found'
-                ], 201);
+                ], 400);
             }
 
 
@@ -67,7 +67,7 @@ class PaymentController extends Controller
             return response()->json([
                 'status' => 'failed',
                 'Exceptions' => $e
-            ], 200);
+            ], 400);
         }
     }
 }

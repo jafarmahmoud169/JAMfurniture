@@ -20,14 +20,14 @@ class EmailVerificationService
                 response()->json([
                     'status' => 'failed',
                     'message' => 'Code Expired'
-                ], 200)->header('Access-Control-Allow-Origin', '*')->send();
+                ], 400)->header('Access-Control-Allow-Origin', '*')->send();
                 exit();
             }
         } else {
             response()->json([
                 'status' => 'failed',
                 'message' => 'Invalid Code'
-            ], 200)->header('Access-Control-Allow-Origin', '*')->send();
+            ], 400)->header('Access-Control-Allow-Origin', '*')->send();
             exit();
         }
     }
@@ -39,7 +39,7 @@ class EmailVerificationService
             response()->json([
                 'status' => 'failed',
                 'message' => 'Email has already been verified'
-            ], 200)->header('Access-Control-Allow-Origin', '*')->send();
+            ], 400)->header('Access-Control-Allow-Origin', '*')->send();
             exit();
         }
     }
@@ -52,7 +52,7 @@ class EmailVerificationService
             response()->json([
                 'status' => 'failed',
                 'message' => 'User Not Found'
-            ], 200)->header('Access-Control-Allow-Origin', '*')->send();
+            ], 400)->header('Access-Control-Allow-Origin', '*')->send();
             exit();
         }
         $this->checkIfEmailIsVerified($user);
@@ -68,7 +68,7 @@ class EmailVerificationService
             response()->json([
                 'status' => 'failed',
                 'message' => 'Email verification failed ,please try again later'
-            ], 200)->header('Access-Control-Allow-Origin', '*')->send();
+            ], 400)->header('Access-Control-Allow-Origin', '*')->send();
             exit();
         }
     }
@@ -110,7 +110,7 @@ $verificationCode=111111;
             response()->json([
                 'status' => 'failed',
                 'message' => 'User Not Found'
-            ],200)->header('Access-Control-Allow-Origin', '*')->send();
+            ],400)->header('Access-Control-Allow-Origin', '*')->send();
             exit();
         }
     }

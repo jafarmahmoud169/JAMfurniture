@@ -36,7 +36,7 @@ class AuthController extends Controller
                 return response()->json([
                     'status' => 'failed',
                     'message' => 'Current password is incorrect'
-                ], 200);
+                ], 400);
             }
 
             $user->password = Hash::make($request->new_password);
@@ -50,7 +50,7 @@ class AuthController extends Controller
             return response()->json([
                 'status' => 'failed',
                 'Exceptions' => $e
-            ], 200);
+            ], 400);
         }
     }
 
@@ -76,13 +76,13 @@ class AuthController extends Controller
                 return response()->json([
                     'status' => 'failed',
                     'message' => 'Invalid email or password'
-                ], 200);
+                ], 401);
             }
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
                 'Exceptions' => $e
-            ], 200);
+            ], 400);
         }
 
     }
@@ -121,14 +121,14 @@ class AuthController extends Controller
                 return response()->json([
                     'status' => 'failed',
                     'message' => 'An error occure while trying to create user'
-                ], 200);
+                ], 400);
             }
 
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
                 'Exceptions' => $e
-            ], 200);
+            ], 400);
         }
     }
     function responseWithToken($token, $user)
@@ -159,7 +159,7 @@ class AuthController extends Controller
             return response()->json([
                 'status' => 'failed',
                 'Exceptions' => $e
-            ], 200);
+            ], 400);
         }
     }
     public function resendVerificationEmailCode(Request $request)
@@ -182,7 +182,7 @@ class AuthController extends Controller
             return response()->json([
                 'status' => 'failed',
                 'Exceptions' => $e
-            ], 200);
+            ], 400);
         }
     }
     public function userProfile()
@@ -226,14 +226,14 @@ class AuthController extends Controller
                 response()->json([
                     'status' => 'failed',
                     'message' => 'User Not Found'
-                ], 200)->header('Access-Control-Allow-Origin', '*')->send();
+                ], 400)->header('Access-Control-Allow-Origin', '*')->send();
                 exit();
             }
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
                 'Exceptions' => $e
-            ], 200);
+            ], 400);
         }
     }
 
@@ -257,7 +257,7 @@ class AuthController extends Controller
             return response()->json([
                 'status' => 'failed',
                 'Exceptions' => $e
-            ], 200);
+            ], 400);
         }
     }
     public function verifyResetCode(Request $request)
@@ -281,7 +281,7 @@ class AuthController extends Controller
             return response()->json([
                 'status' => 'failed',
                 'Exceptions' => $e
-            ], 200);
+            ], 400);
         }
     }
 
@@ -306,7 +306,7 @@ class AuthController extends Controller
             return response()->json([
                 'status' => 'failed',
                 'Exceptions' => $e
-            ], 200);
+            ], 400);
         }
     }
 
@@ -345,12 +345,12 @@ class AuthController extends Controller
                 return response()->json([
                     'status' => 'failed',
                     'message' => 'user not found'
-                ], 200);
+                ], 400);
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
                 'Exceptions' => $e
-            ], 200);
+            ], 400);
         }
     }
 
@@ -371,13 +371,13 @@ class AuthController extends Controller
                 return response()->json([
                     'status' => 'failed',
                     'message' => 'User not found'
-                ], 200);
+                ], 400);
             }
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
                 'Exceptions' => $e
-            ], 200);
+            ], 400);
         }
     }
 

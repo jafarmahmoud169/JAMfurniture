@@ -49,13 +49,13 @@ class RatingsController extends Controller
                 return response()->json([
                     'status' => 'failed',
                     'message' => 'Product not found'
-                ], 200);
+                ], 400);
 
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
                 'Exceptions' => $e
-            ], 200);
+            ], 400);
         }
     }
 

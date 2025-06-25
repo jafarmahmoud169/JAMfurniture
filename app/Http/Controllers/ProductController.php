@@ -82,8 +82,8 @@ class ProductController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
-                                'Exceptions' => $e
-            ], 200);
+                'Exceptions' => $e
+            ], 400);
         }
 
     }
@@ -104,7 +104,7 @@ class ProductController extends Controller
             return response()->json([
                 'status' => 'failed',
                 'message' => 'Product not found'
-            ], 200);
+            ], 400);
     }
 
 
@@ -200,7 +200,7 @@ class ProductController extends Controller
                 return response()->json([
                     'status' => 'failed',
                     'message' => 'Product not found'
-                ], 200);
+                ], 400);
             }
 
             // Handle image upload if present
@@ -230,7 +230,7 @@ class ProductController extends Controller
                 'status' => 'failed',
                 'message' => 'Unexpected error',
                 'exception' => $e->getMessage()
-            ], 200);
+            ], 400);
         }
     }
 
@@ -250,7 +250,7 @@ class ProductController extends Controller
             return response()->json([
                 'status' => 'failed',
                 'message' => 'Product not found'
-            ], 200);
+            ], 400);
     }
     public function search($key)
     {

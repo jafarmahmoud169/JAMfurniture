@@ -21,14 +21,14 @@ class ResetPasswordService
                 response()->json([
                     'status' => 'failed',
                     'message' => 'Code Expired'
-                ], 200)->header('Access-Control-Allow-Origin', '*')->send();
+                ], 400)->header('Access-Control-Allow-Origin', '*')->send();
                 exit();
             }
         } else {
             response()->json([
                 'status' => 'failed',
                 'message' => 'Invalid Code'
-            ], 200)->header('Access-Control-Allow-Origin', '*')->send();
+            ], 400)->header('Access-Control-Allow-Origin', '*')->send();
             exit();
         }
     }
@@ -44,7 +44,7 @@ class ResetPasswordService
             response()->json([
                 'status' => 'failed',
                 'message' => 'User Not Found'
-            ], 200)->header('Access-Control-Allow-Origin', '*')->send();
+            ], 400)->header('Access-Control-Allow-Origin', '*')->send();
             exit();
         }
 
@@ -64,7 +64,7 @@ class ResetPasswordService
             response()->json([
                 'status' => 'failed',
                 'message' => 'Password Reset failed , please try again later'
-            ], 200)->header('Access-Control-Allow-Origin', '*')->send();
+            ], 400)->header('Access-Control-Allow-Origin', '*')->send();
             exit();
         }
     }
@@ -106,7 +106,7 @@ $ResetCode=111111;
             response()->json([
                 'status' => 'failed',
                 'message' => 'User Not Found'
-            ], 200)->header('Access-Control-Allow-Origin', '*')->send();
+            ], 400)->header('Access-Control-Allow-Origin', '*')->send();
             exit();
         }
     }
@@ -139,14 +139,14 @@ $ResetCode=111111;
                 response()->json([
                     'status' => 'failed',
                     'message' => 'Code Expired'
-                ], 200)->header('Access-Control-Allow-Origin', '*')->send();
+                ], 400)->header('Access-Control-Allow-Origin', '*')->send();
                 exit();
             }
         } else {
             response()->json([
                 'status' => 'failed',
                 'message' => 'Invalid Code'
-            ], 200)->header('Access-Control-Allow-Origin', '*')->send();
+            ], 400)->header('Access-Control-Allow-Origin', '*')->send();
             exit();
         }
     }

@@ -24,7 +24,7 @@ class LocationController extends Controller
         } else {
             return response()->json([
                 'status' => 'success',
-                'message' => "User have no locations"
+                'message' => "User have no locations yet"
             ], 200);
         }
 
@@ -68,7 +68,7 @@ class LocationController extends Controller
             return response()->json([
                 'status' => 'failed',
                 'Exceptions' => $e
-            ], 200);
+            ], 400);
         }
     }
 
@@ -100,7 +100,7 @@ class LocationController extends Controller
                     return response()->json([
                         'status' => 'failed',
                         'message' => 'You do not have permission to edit this location'
-                    ], 200);
+                    ], 403);
                 } else {
 
                     $location->city = $request->city;
@@ -120,12 +120,12 @@ class LocationController extends Controller
                 return response()->json([
                     'status' => 'failed',
                     'message' => 'Location not found'
-                ], 200);
+                ], 400);
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
                 'Exceptions' => $e
-            ], 200);
+            ], 400);
         }
     }
 
@@ -141,7 +141,7 @@ class LocationController extends Controller
                 return response()->json([
                     'status' => 'failed',
                     'message' => 'You do not have permission to delete this location'
-                ], 200);
+                ],403);
             } else {
                 $location->delete();
                 return response()->json([
@@ -153,6 +153,6 @@ class LocationController extends Controller
             return response()->json([
                 'status' => 'failed',
                 'message' => 'Location not found'
-            ], 200);
+            ], 400);
     }
 }

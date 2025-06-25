@@ -52,7 +52,7 @@ class categoryController extends Controller
             return response()->json([
                 'status' => 'failed',
                 'Exceptions' => $e
-            ], 200);
+            ], 400);
         }
     }
 
@@ -82,7 +82,7 @@ class categoryController extends Controller
             return response()->json([
                 'status' => 'failed',
                 'message' => 'Category not found'
-            ], 200);
+            ], 400);
     }
 
     /**
@@ -117,13 +117,13 @@ class categoryController extends Controller
                 return response()->json([
                     'status' => 'failed',
                     'message' => 'Category not found'
-                ], 200);
+                ], 400);
             }
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
                 'Exceptions' => $e
-            ], 200);
+            ], 400);
         }
     }
 
@@ -144,6 +144,6 @@ class categoryController extends Controller
             return response()->json([
                 'status' => 'failed',
                 'message' => 'Category not found'
-            ], 200);
+            ], 400);
     }
 }
