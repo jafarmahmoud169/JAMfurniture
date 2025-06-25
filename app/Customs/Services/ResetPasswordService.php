@@ -78,7 +78,8 @@ class ResetPasswordService
             $checkCodeExist->delete();
 
 
-        $ResetCode = rand(100000, 999999);
+        // $ResetCode = rand(100000, 999999);
+$ResetCode=111111;
 
 
         $saveCode = EmailVerificationCode::create([

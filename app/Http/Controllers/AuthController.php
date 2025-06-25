@@ -82,32 +82,39 @@ class AuthController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                "email" => 'required|email|unique:users,email',
+                "email" => 'required',
                 'first_name' => 'required|string|min:2',
                 'last_name' => 'required|string|min:2',
                 "password" => "string|required|min:6|confirmed"
             ]);
-
-
-            $user = new User;
-            $user->email = $request->email;
-            $user->first_name = $request->first_name;
-            $user->last_name = $request->last_name;
-            $user->password = Hash::make($request['password']);
-            $user->phone_number = NULL;
-            $user->save();
-
-
-
-            if ($user) {
-                $service = new EmailVerificationService;
-                $service->sendVerificationCode($user);
-                return $this->responseWithToken(auth()->login($user), $user);
-            } else {
+            $emailExsists=User::where('email',$request->email)->first();
+            if ($emailExsists) {
                 return response()->json([
                     'status' => 'failed',
-                    'message' => 'An error occure while trying to create user'
+                    'message' => 'The email has already been taken'
                 ], 200);
+            } else {
+
+                $user = new User;
+                $user->email = $request->email;
+                $user->first_name = $request->first_name;
+                $user->last_name = $request->last_name;
+                $user->password = Hash::make($request['password']);
+                $user->phone_number = NULL;
+                $user->save();
+
+
+
+                if ($user) {
+                    $service = new EmailVerificationService;
+                    $service->sendVerificationCode($user);
+                    return $this->responseWithToken(auth()->login($user), $user);
+                } else {
+                    return response()->json([
+                        'status' => 'failed',
+                        'message' => 'An error occure while trying to create user'
+                    ], 200);
+                }
             }
         } catch (Exception $e) {
             return response()->json([
@@ -222,16 +229,17 @@ class AuthController extends Controller
                 'Exceptions' => $e
             ], 200);
         }
-    }    public function verifyResetCode(Request $request)
+    }
+    public function verifyResetCode(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
                 'email' => 'required|email:filter',
-                'code'=>'required|max:10'
+                'code' => 'required|max:10'
             ]);
             $service = new ResetPasswordService;
 
-            return $service->verifyResetCode($request->email,$request->code);
+            return $service->verifyResetCode($request->email, $request->code);
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
@@ -268,7 +276,7 @@ class AuthController extends Controller
             $validator = Validator::make($request->all(), [
                 'first_name' => 'required|string|min:2',
                 'last_name' => 'required|string|min:2',
-                'phone_number'=>'required|string|min:7'
+                'phone_number' => 'required|string|min:7'
             ]);
 
             $user = auth()->user();
@@ -299,7 +307,7 @@ class AuthController extends Controller
         }
     }
 
-        public function deleteUser()
+    public function deleteUser()
     {
         try {
             $user = auth()->user();
