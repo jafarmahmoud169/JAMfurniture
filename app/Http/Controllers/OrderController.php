@@ -93,9 +93,15 @@ class OrderController extends Controller
             $validator = Validator::make($request->all(), [
                 'order_items' => 'required',
                 'date_of_delivery' => 'required|string',
-                'location_id' => 'required',
+                'location_id' => 'required|exists:locations,id',
             ]);
-
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
             $user_id = auth()->id();
             //check avilability then calculate total price
             $total_price = 0;
@@ -142,7 +148,6 @@ class OrderController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
-                'validator errors' => $validator->errors(),
                 'Exceptions' => $e
             ], 200);
         }
@@ -174,6 +179,16 @@ class OrderController extends Controller
     public function change_order_status(Request $request, $id)
     {
         try {
+            $validator = Validator::make($request->all(), [
+                'status' => 'required',
+            ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
             $order = Order::find($id);
             if ($order) {
                 $order->update(['status' => $request->status]);

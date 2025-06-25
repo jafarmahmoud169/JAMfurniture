@@ -41,17 +41,18 @@ class ProductController extends Controller
                 'amount' => 'required|numeric',
                 'discount' => 'required|numeric',
                 'image' => 'required|image',
-                'category_id' => 'required|numeric',
+                'category_id' => 'sometimes|numeric|exists:categories,id',
                 'dimensions'=>'required',
                 'colors'=>'required',
                 'material'=>'required'
             ]);
-
-            if (!Category::find($request->category_id))
+            if ($validator->fails()) {
                 return response()->json([
                     'status' => 'failed',
-                    'message' => 'Category not found'
-                ], 200);
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
 
             $image = $request->file('image');
             $image_name = time() . "." . $image->getClientOriginalName();
@@ -81,8 +82,7 @@ class ProductController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
-                'validator errors' => $validator->errors(),
-                'Exceptions' => $e
+                                'Exceptions' => $e
             ], 200);
         }
 
@@ -166,8 +166,7 @@ class ProductController extends Controller
     //     } catch (Exception $e) {
     //         return response()->json([
     //             'status' => 'failed',
-    //             'validator errors' => $validator->errors(),
-    //             'Exceptions' => $e
+    //                 //             'Exceptions' => $e
     //         ], 200);
     //     }
     // }
@@ -193,7 +192,7 @@ class ProductController extends Controller
                     'status' => 'failed',
                     'message' => 'Validation error',
                     'errors' => $validator->errors()
-                ], 200);
+                ], 422);
             }
 
             $product = Product::find($id);

@@ -31,7 +31,13 @@ class categoryController extends Controller
             $validator = Validator::make($request->all(), [
                 'name' => 'required|string|unique:categories,name',
             ]);
-
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
 
 
             $category = new category;
@@ -45,7 +51,6 @@ class categoryController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
-                'validator errors' => $validator->errors(),
                 'Exceptions' => $e
             ], 200);
         }
@@ -95,7 +100,7 @@ class categoryController extends Controller
                     'status' => 'failed',
                     'message' => 'Validation error',
                     'errors' => $validator->errors()
-                ], 200);
+                ], 422);
             }
 
             $category = Category::find($id);
@@ -117,9 +122,8 @@ class categoryController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
-                'message' => 'Something went wrong',
-                'exception' => $e->getMessage()
-            ], 500);
+                'Exceptions' => $e
+            ], 200);
         }
     }
 

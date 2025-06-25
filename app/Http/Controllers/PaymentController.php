@@ -21,6 +21,13 @@ class PaymentController extends Controller
                 'payment_phone_number' => 'required',
                 'payment_process_number' => 'required',
             ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
             $user_id = auth()->id();
             $order = Order::find($id);
             if ($order) {
@@ -59,7 +66,6 @@ class PaymentController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
-                'validator errors' => $validator->errors(),
                 'Exceptions' => $e
             ], 200);
         }

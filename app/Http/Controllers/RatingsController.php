@@ -23,32 +23,37 @@ class RatingsController extends Controller
                 'product_id' => 'required',
                 'rating' => 'min:1|max:5|required|integer'
             ]);
-            throw_if($validator->fails());
-                $product = product::find($request->product_id);
-                if ($product) {
-                    Ratings::create([
-                        'user_id' => auth()->id(),
-                        'product_id' => $request->product_id,
-                        'rating' => $request->rating
-                    ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+            $product = product::find($request->product_id);
+            if ($product) {
+                Ratings::create([
+                    'user_id' => auth()->id(),
+                    'product_id' => $request->product_id,
+                    'rating' => $request->rating
+                ]);
 
-                    $product->updateTrendStatus();
+                $product->updateTrendStatus();
 
 
-                    return response()->json([
-                        'status' => 'success',
-                        'message' => 'rating added'
-                    ], 201);
-                } else
-                    return response()->json([
-                        'status' => 'failed',
-                        'message' => 'Product not found'
-                    ], 200);
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'rating added'
+                ], 201);
+            } else
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Product not found'
+                ], 200);
 
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
-                'validator errors' => $validator->errors(),
                 'Exceptions' => $e
             ], 200);
         }

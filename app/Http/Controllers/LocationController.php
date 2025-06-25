@@ -44,6 +44,13 @@ class LocationController extends Controller
                 'zip_code'=> 'required',
                 'apartment_number'=> 'required'
             ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
             location::create([
                 'city' => $request->city,
                 'street' => $request->street,
@@ -60,7 +67,6 @@ class LocationController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
-                'validator errors' => $validator->errors(),
                 'Exceptions' => $e
             ], 200);
         }
@@ -80,7 +86,13 @@ class LocationController extends Controller
                 'zip_code'=> 'required',
                 'apartment_number'=> 'required'
             ]);
-
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
             $location = Location::find($id);
 
             if ($location) {
@@ -112,7 +124,6 @@ class LocationController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
-                'validator errors' => $validator->errors(),
                 'Exceptions' => $e
             ], 200);
         }

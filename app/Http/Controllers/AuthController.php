@@ -26,8 +26,9 @@ class AuthController extends Controller
             if ($validator->fails()) {
                 return response()->json([
                     'status' => 'failed',
-                    'validator errors' => $validator->errors()
-                ], 200);
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
+                ], 422);
             }
 
             $user = auth()->user();
@@ -60,6 +61,14 @@ class AuthController extends Controller
                 "email" => 'required|email:filter',
                 "password" => "string|required|min:6"
             ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
             $token = auth()->attempt($request->all());
             if ($token) {
                 return $this->responseWithToken($token, auth()->user());
@@ -72,7 +81,6 @@ class AuthController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
-                'validator errors' => $validator->errors(),
                 'Exceptions' => $e
             ], 200);
         }
@@ -82,44 +90,43 @@ class AuthController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                "email" => 'required',
+                "email" => 'required|unique:users,id',
                 'first_name' => 'required|string|min:2',
                 'last_name' => 'required|string|min:2',
                 "password" => "string|required|min:6|confirmed"
             ]);
-            $emailExsists=User::where('email',$request->email)->first();
-            if ($emailExsists) {
+            if ($validator->fails()) {
                 return response()->json([
                     'status' => 'failed',
-                    'message' => 'The email has already been taken'
-                ], 200);
-            } else {
-
-                $user = new User;
-                $user->email = $request->email;
-                $user->first_name = $request->first_name;
-                $user->last_name = $request->last_name;
-                $user->password = Hash::make($request['password']);
-                $user->phone_number = NULL;
-                $user->save();
-
-
-
-                if ($user) {
-                    $service = new EmailVerificationService;
-                    $service->sendVerificationCode($user);
-                    return $this->responseWithToken(auth()->login($user), $user);
-                } else {
-                    return response()->json([
-                        'status' => 'failed',
-                        'message' => 'An error occure while trying to create user'
-                    ], 200);
-                }
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
+                ], 422);
             }
+
+            $user = new User;
+            $user->email = $request->email;
+            $user->first_name = $request->first_name;
+            $user->last_name = $request->last_name;
+            $user->password = Hash::make($request['password']);
+            $user->phone_number = NULL;
+            $user->save();
+
+
+
+            if ($user) {
+                $service = new EmailVerificationService;
+                $service->sendVerificationCode($user);
+                return $this->responseWithToken(auth()->login($user), $user);
+            } else {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'An error occure while trying to create user'
+                ], 200);
+            }
+
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
-                'validator errors' => $validator->errors(),
                 'Exceptions' => $e
             ], 200);
         }
@@ -137,14 +144,20 @@ class AuthController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'email' => 'required|email:filter|max:255',
-                'code' => 'required|max:255'
+                'code' => 'required|max:25'
             ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
             $service = new EmailVerificationService;
             return $service->verifyEmail($request->email, $request->code);
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
-                'validator errors' => $validator->errors(),
                 'Exceptions' => $e
             ], 200);
         }
@@ -155,13 +168,19 @@ class AuthController extends Controller
             $validator = Validator::make($request->all(), [
                 'email' => 'required|email:filter'
             ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
             $service = new EmailVerificationService;
 
             return $service->resendCode($request->email);
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
-                'validator errors' => $validator->errors(),
                 'Exceptions' => $e
             ], 200);
         }
@@ -185,7 +204,13 @@ class AuthController extends Controller
             $validator = Validator::make($request->all(), [
                 "email" => 'required|email',
             ]);
-
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
 
 
             $user = User::where('email', $request->email)->first();
@@ -207,7 +232,6 @@ class AuthController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
-                'validator errors' => $validator->errors(),
                 'Exceptions' => $e
             ], 200);
         }
@@ -219,13 +243,19 @@ class AuthController extends Controller
             $validator = Validator::make($request->all(), [
                 'email' => 'required|email:filter'
             ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
             $service = new ResetPasswordService;
 
             return $service->resendresetCode($request->email);
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
-                'validator errors' => $validator->errors(),
                 'Exceptions' => $e
             ], 200);
         }
@@ -237,13 +267,19 @@ class AuthController extends Controller
                 'email' => 'required|email:filter',
                 'code' => 'required|max:10'
             ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
             $service = new ResetPasswordService;
 
             return $service->verifyResetCode($request->email, $request->code);
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
-                'validator errors' => $validator->errors(),
                 'Exceptions' => $e
             ], 200);
         }
@@ -257,12 +293,18 @@ class AuthController extends Controller
                 'code' => 'required|max:255',
                 'new_password' => 'string|required|min:6|confirmed'
             ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
             $service = new ResetPasswordService;
             return $service->resetPassowrd($request->email, $request->code, $request->new_password);
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
-                'validator errors' => $validator->errors(),
                 'Exceptions' => $e
             ], 200);
         }
@@ -278,7 +320,13 @@ class AuthController extends Controller
                 'last_name' => 'required|string|min:2',
                 'phone_number' => 'required|string|min:7'
             ]);
-
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
             $user = auth()->user();
 
 
@@ -301,7 +349,6 @@ class AuthController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
-                'validator errors' => $validator->errors(),
                 'Exceptions' => $e
             ], 200);
         }
