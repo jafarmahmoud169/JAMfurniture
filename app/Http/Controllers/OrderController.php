@@ -48,12 +48,14 @@ class OrderController extends Controller
             }
             return response()->json([
                 'status' => 'success',
+                'message'=>'last 10 orders',
                 'orders' => $orders
             ], 200);
         } else
             return response()->json([
                 'status' => 'success',
-                'orders' => 'No orders yet'
+                'message' => 'No orders yet',
+                'orders' => null
             ], 200);
     }
 
@@ -73,6 +75,7 @@ class OrderController extends Controller
             }
             return response()->json([
                 'status' => 'success',
+                'message' => 'Order information',
                 'order' => $order,
                 //'items' => $items
             ], 200);
@@ -166,12 +169,14 @@ class OrderController extends Controller
             }
             return response()->json([
                 'status' => 'success',
+                'message' => 'all user`s orders',
                 'orders' => $orders
             ], 200);
         } else
             return response()->json([
                 'status' => 'success',
-                'orders' => 'No orders'
+                'message' => 'user have no orders yet',
+                'orders'=>null
             ], 200);
     }
 

@@ -18,6 +18,7 @@ class categoryController extends Controller
         $categories = category::all();
         return response()->json([
             'status' => 'success',
+            'message'=>'all categories',
             'categories' => $categories
         ], 200);
     }
@@ -68,14 +69,16 @@ class categoryController extends Controller
             if ($products->isNotEmpty()) {
                 return response()->json([
                     'status' => 'success',
+                    'message' => '10 products of this category',
                     'category' => $category,
                     'products' => $products
                 ], 200);
             } else {
                 return response()->json([
                     'status' => 'success',
+                    'message' => 'Category contains no products',
                     'category' => $category,
-                    'products' => 'Category contains no products'
+                    'products' => null
                 ], 200);
             }
         } else

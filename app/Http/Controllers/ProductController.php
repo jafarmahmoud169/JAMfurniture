@@ -19,12 +19,14 @@ class ProductController extends Controller
         if ($products) {
             return response()->json([
                 'status' => 'success',
+                'message' => '10 products',
                 'products' => $products
             ], 200);
         } else
             return response()->json([
                 'status' => 'success',
-                'products' => 'No products'
+                'message' => 'No products',
+                'products'=>null
             ], 200);
     }
 
@@ -97,6 +99,7 @@ class ProductController extends Controller
         if ($product) {
             return response()->json([
                 'status' => 'success',
+                'message'=>'Product information',
                 'product' => $product,
                 'rating' => $product->averageRating()
             ], 200);
@@ -262,12 +265,14 @@ class ProductController extends Controller
         if ($products->isNotEmpty()) {
             return response()->json([
                 'status' => 'success',
+                'message'=>'Results for'.$key,
                 'products' => $products
             ], 200);
         } else
             return response()->json([
                 'status' => 'success',
-                'message' => 'No results'
+                'message' => 'No results',
+                'products'=>null
             ], 200);
     }
     public function trendy_products()
@@ -277,12 +282,14 @@ class ProductController extends Controller
         if ($products->isNotEmpty()) {
             return response()->json([
                 'status' => 'success',
+                'message'=>'10 Trendy products',
                 'products' => $products
             ], 200);
         } else
             return response()->json([
                 'status' => 'success',
-                'products' => 'No trendy products'
+                'message' => 'No trendy products',
+                'products' => null
             ], 200);
     }
 
@@ -296,12 +303,14 @@ class ProductController extends Controller
         if ($products->isNotEmpty()) {
             return response()->json([
                 'status' => 'success',
+                'message'=>'10 offers',
                 'products' => $products
             ], 200);
         } else
             return response()->json([
                 'status' => 'success',
-                'products' => 'No offers'
+                'message' => 'there is no offers right now',
+                'products' => null
             ], 200);
     }
 }

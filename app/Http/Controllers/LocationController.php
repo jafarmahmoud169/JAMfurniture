@@ -19,12 +19,14 @@ class LocationController extends Controller
         if ($locations->isNotEmpty()) {
             return response()->json([
                 'status' => 'success',
+                'message' => 'all user`s locations',
                 'locations' => $locations
             ], 200);
         } else {
             return response()->json([
                 'status' => 'success',
-                'message' => "User have no locations yet"
+                'message' => "User have no locations yet",
+                'locations'=>null
             ], 200);
         }
 
@@ -40,9 +42,9 @@ class LocationController extends Controller
                 'city' => 'required',
                 'street' => 'required',
                 'building' => 'required',
-                'more_details'=> 'required',
-                'zip_code'=> 'required',
-                'apartment_number'=> 'required'
+                'more_details' => 'required',
+                'zip_code' => 'required',
+                'apartment_number' => 'required'
             ]);
             if ($validator->fails()) {
                 return response()->json([
@@ -56,9 +58,9 @@ class LocationController extends Controller
                 'street' => $request->street,
                 'building' => $request->building,
                 'user_id' => Auth::id(),
-                'more_details'=> $request->more_details,
-                'zip_code'=> $request->zip_code,
-                'apartment_number'=> $request->apartment_number
+                'more_details' => $request->more_details,
+                'zip_code' => $request->zip_code,
+                'apartment_number' => $request->apartment_number
             ]);
             return response()->json([
                 'status' => 'success',
@@ -82,9 +84,9 @@ class LocationController extends Controller
                 'city' => 'required',
                 'street' => 'required',
                 'building' => 'required',
-                'more_details'=> 'required',
-                'zip_code'=> 'required',
-                'apartment_number'=> 'required'
+                'more_details' => 'required',
+                'zip_code' => 'required',
+                'apartment_number' => 'required'
             ]);
             if ($validator->fails()) {
                 return response()->json([
@@ -141,7 +143,7 @@ class LocationController extends Controller
                 return response()->json([
                     'status' => 'failed',
                     'message' => 'You do not have permission to delete this location'
-                ],403);
+                ], 403);
             } else {
                 $location->delete();
                 return response()->json([
