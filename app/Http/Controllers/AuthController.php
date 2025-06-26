@@ -14,46 +14,6 @@ use Hash;
 class AuthController extends Controller
 {
 
-
-    public function change_password(Request $request)
-    {
-        try {
-            $validator = Validator::make($request->all(), [
-                'current_password' => 'required|string',
-                'new_password' => 'required|string|min:6|confirmed'
-            ]);
-
-            if ($validator->fails()) {
-                return response()->json([
-                    'status' => 'failed',
-                    'message' => 'Validation error',
-                    'errors' => $validator->errors()
-                ], 422);
-            }
-
-            $user = auth()->user();
-            if (!Hash::check($request->current_password, $user->password)) {
-                return response()->json([
-                    'status' => 'failed',
-                    'message' => 'Current password is incorrect'
-                ], 400);
-            }
-
-            $user->password = Hash::make($request->new_password);
-            $user->save();
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Password changed successfully'
-            ], 200);
-        } catch (Exception $e) {
-            return response()->json([
-                'status' => 'failed',
-                'Exceptions' => $e
-            ], 400);
-        }
-    }
-
     function login(Request $request)
     {
         try {
@@ -71,7 +31,12 @@ class AuthController extends Controller
 
             $token = auth()->attempt($request->all());
             if ($token) {
-                return $this->responseWithToken($token, auth()->user());
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Login successfully',
+                    'user' => auth()->user(),
+                    'access_token' => $token
+                ], 200);
             } else {
                 return response()->json([
                     'status' => 'failed',
@@ -86,6 +51,18 @@ class AuthController extends Controller
         }
 
     }
+    public function logout()
+    {
+        auth()->logout();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'User successfully signed out'
+        ], 200);
+    }
+
+
+
+
     function register(Request $request)
     {
         try {
@@ -116,7 +93,12 @@ class AuthController extends Controller
             if ($user) {
                 $service = new EmailVerificationService;
                 $service->sendVerificationCode($user);
-                return $this->responseWithToken(auth()->login($user), $user);
+                return response()->json([
+                    'status' => 'success',
+                    'message'=>'user registered successfully',
+                    'user' => $user,
+                    'access_token' => auth()->login($user)
+                ], 200);
             } else {
                 return response()->json([
                     'status' => 'failed',
@@ -131,16 +113,7 @@ class AuthController extends Controller
             ], 400);
         }
     }
-    function responseWithToken($token, $user)
-    {
-        return response()->json([
-            'status' => 'success',
-            'user' => $user,
-            'access_token' => $token
-        ], 200);
-    }
-    function verifyUserEmail(Request $request)
-    {
+    function verifyUserEmail(Request $request){
         try {
             $validator = Validator::make($request->all(), [
                 'email' => 'required|email:filter|max:255',
@@ -185,19 +158,12 @@ class AuthController extends Controller
             ], 400);
         }
     }
-    public function userProfile()
-    {
-        return response()->json(auth()->user());
-    }
 
-    public function logout()
-    {
-        auth()->logout();
-        return response()->json([
-            'status' => 'success',
-            'message' => 'User successfully signed out'
-        ], 200);
-    }
+
+
+
+
+    // reset password
     function sendResetCode(Request $request)
     {
         try {
@@ -310,8 +276,11 @@ class AuthController extends Controller
         }
     }
 
-
-
+//PROFILE
+    public function userProfile()
+    {
+        return response()->json(auth()->user());
+    }
     public function profileUpdate(Request $request)
     {
         try {
@@ -353,7 +322,43 @@ class AuthController extends Controller
             ], 400);
         }
     }
+    public function change_password(Request $request){
+        try {
+            $validator = Validator::make($request->all(), [
+                'current_password' => 'required|string',
+                'new_password' => 'required|string|min:6|confirmed'
+            ]);
 
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $user = auth()->user();
+            if (!Hash::check($request->current_password, $user->password)) {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Current password is incorrect'
+                ], 400);
+            }
+
+            $user->password = Hash::make($request->new_password);
+            $user->save();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Password changed successfully'
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'failed',
+                'Exceptions' => $e
+            ], 400);
+        }
+    }
     public function deleteUser()
     {
         try {
