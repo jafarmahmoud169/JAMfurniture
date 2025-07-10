@@ -29,18 +29,27 @@ class ResetPasswordNotification extends Notification
         return ['mail'];
     }
 
-    public function toMail(object $notifiable): MailMessage
-    {
-        return (new MailMessage)
-                    ->subject('Reset Your Password')
-                    ->line('Dear '.$notifiable->first_name)
-                    ->line('We received a request to reset the password for your account.
-                    Please use the following reset code to proceed:')
-                    ->line('')
-                    ->line('Reset Code : '.$this->code)
-                    ->line('')
-                    ->line('This code will expire in 10 minutes. If you did not request a password reset, please ignore this message , your account is safe.');
-    }
+    // public function toMail(object $notifiable): MailMessage
+    // {
+    //     return (new MailMessage)
+    //                 ->subject('Reset Your Password')
+    //                 ->line('Dear '.$notifiable->first_name)
+    //                 ->line('We received a request to reset the password for your account.
+    //                 Please use the following reset code to proceed:')
+    //                 ->line('')
+    //                 ->line('Reset Code : '.$this->code)
+    //                 ->line('')
+    //                 ->line('This code will expire in 10 minutes. If you did not request a password reset, please ignore this message , your account is safe.');
+    // }
+public function toMail(object $notifiable): MailMessage
+{
+    return (new MailMessage)
+        ->subject('Reset Your Password')
+        ->view('emails.resetPassword', [
+            'name' => $notifiable->first_name,
+            'code' => $this->code,
+        ]);
+}
 
 
 

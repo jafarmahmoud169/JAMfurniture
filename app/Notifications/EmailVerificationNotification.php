@@ -29,25 +29,29 @@ class EmailVerificationNotification extends Notification
         return ['mail'];
     }
 
-    public function toMail(object $notifiable): MailMessage
-    {
-        return (new MailMessage)
-                    ->subject('Verify Email Address')
-                    ->line('Dear '.$notifiable->first_name)
-                    ->line('Thank you for signing up with JAMfurniture! We’re excited to have you as part of our community.
-                    To complete your registration, please verify your email address by usig the code below:')
-                    ->line('')
-                    ->line('Verification Code : '.$this->code)
-                    ->line('')
-                    ->line('If you did not sign up for an account on JAMfurniture, please ignore this email.');
-    }
-
     // public function toMail(object $notifiable): MailMessage
     // {
     //     return (new MailMessage)
-    //         ->subject('Verify Email Address')
-    //         ->view('emailVerification', ['code' => $this->code, 'name' => $notifiable->name]);
+    //                 ->subject('Verify Email Address')
+    //                 ->line('Dear '.$notifiable->first_name)
+    //                 ->line('Thank you for signing up with JAMfurniture! We’re excited to have you as part of our community.
+    //                 To complete your registration, please verify your email address by usig the code below:')
+    //                 ->line('')
+    //                 ->line('Verification Code : '.$this->code)
+    //                 ->line('')
+    //                 ->line('If you did not sign up for an account on JAMfurniture, please ignore this email.');
     // }
+
+public function toMail(object $notifiable): MailMessage
+{
+    return (new MailMessage)
+        ->subject('Verify Email Address')
+        ->view('emails.emailVerification', [
+            'name' => $notifiable->first_name,
+            'code' => $this->code,
+        ]);
+}
+
 
     /**
      * Get the array representation of the notification.

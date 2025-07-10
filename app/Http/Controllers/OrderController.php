@@ -1,10 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderStatusChangedMail;
 use App\Models\Order;
 use App\Models\OrderItems;
-use App\Models\CartItem;
 use App\Models\product;
 use App\Models\location;
 use Illuminate\Http\Request;
@@ -36,28 +36,6 @@ class OrderController extends Controller
         return null;
     }
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        $orders = order::simplePaginate(10);
-        if ($orders) {
-            foreach ($orders as $order) {
-                $order->payment;
-            }
-            return response()->json([
-                'status' => 'success',
-                'message'=>'last 10 orders',
-                'orders' => $orders
-            ], 200);
-        } else
-            return response()->json([
-                'status' => 'success',
-                'message' => 'No orders yet',
-                'orders' => null
-            ], 200);
-    }
 
     /**
      * Display the specified resource.
@@ -181,39 +159,6 @@ class OrderController extends Controller
     }
 
 
-    public function change_order_status(Request $request, $id)
-    {
-        try {
-            $validator = Validator::make($request->all(), [
-                'status' => 'required',
-            ]);
-            if ($validator->fails()) {
-                return response()->json([
-                    'status' => 'failed',
-                    'message' => 'Validation error',
-                    'errors' => $validator->errors()
-                ], 422);
-            }
-            $order = Order::find($id);
-            if ($order) {
-                $order->update(['status' => $request->status]);
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Status changed successfully'
-                ], 200);
-            } else {
-                return response()->json([
-                    'status' => 'failed',
-                    'message' => 'Order not found'
-                ], 400);
-            }
-        } catch (Exception $e) {
-            return response()->json([
-                'status' => 'failed',
-                'Exceptions' => $e
-            ], 400);
-        }
-    }
     public function destroy($id)
     {
         $order = order::find($id);

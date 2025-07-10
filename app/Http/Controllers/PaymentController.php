@@ -7,7 +7,8 @@ use App\Models\Order;
 use Illuminate\Http\Request;
 use Exception;
 use Validator;
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderStatusChangedMail;
 class PaymentController extends Controller
 {
     /**
@@ -17,7 +18,7 @@ class PaymentController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'payment_gateway'=>'required',
+                'payment_gateway' => 'required',
                 'payment_phone_number' => 'required',
                 'payment_process_number' => 'required',
             ]);
@@ -50,6 +51,10 @@ class PaymentController extends Controller
                     $order->status = 'Pending';
                     $order->save();
 
+                    // Send email notification to user
+                    Mail::to($order->user->email)->send(
+                        new OrderStatusChangedMail($order, 'Pending')
+                    );
                     return response()->json([
                         'status' => 'success',
                         'message' => 'Order paied successfully'
