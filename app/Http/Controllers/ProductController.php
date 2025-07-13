@@ -42,7 +42,7 @@ class ProductController extends Controller
                 'status' => 'success',
                 'message'=>'Product information',
                 'product' => $product,
-                'rating' => $product->averageRating()
+                'rating' =>json_decode( $product->averageRating())
             ], 200);
         } else
             return response()->json([

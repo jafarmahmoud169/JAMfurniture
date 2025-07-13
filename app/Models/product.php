@@ -64,4 +64,9 @@ class product extends Model
     public function final_price() {
         return $this->price - $this->discount;
     }
+    public function getColorsAttribute($value)
+{
+    return json_decode($value);
+}
+
 }
