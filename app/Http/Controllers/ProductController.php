@@ -57,7 +57,7 @@ class ProductController extends Controller
         $products = product::whereNotNull('name')
             ->where('name', 'LIKE', "%$key%")
             ->orderByDesc('id')
-            ->get();
+            ->paginate(10);
 
         if ($products->isNotEmpty()) {
             return response()->json([
