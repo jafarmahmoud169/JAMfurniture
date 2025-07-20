@@ -125,7 +125,7 @@ CREATE TABLE `email_verification_codes` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 43 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 66 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */
 ;
 --
@@ -134,6 +134,79 @@ CREATE TABLE `email_verification_codes` (
 LOCK TABLES `email_verification_codes` WRITE;
 /*!40000 ALTER TABLE `email_verification_codes` DISABLE KEYS */
 ;
+INSERT INTO `email_verification_codes`
+VALUES (
+    43,
+    'jafarmahmoud535@gmassil.com',
+    '468083',
+    '2025-06-25 12:41:26',
+    '2025-06-25 11:41:26',
+    '2025-06-25 11:41:26'
+  ),
+(
+    44,
+    'jafarmahmoud535@gmhjkail.com',
+    '111111',
+    '2025-06-25 13:25:30',
+    '2025-06-25 12:25:30',
+    '2025-06-25 12:25:30'
+  ),
+(
+    48,
+    'jafarmahmoud535@gmtestail.com',
+    '111111',
+    '2025-06-26 09:04:13',
+    '2025-06-26 08:04:13',
+    '2025-06-26 08:04:13'
+  ),
+(
+    49,
+    'jafarmahmoud535@gmtesssstail.com',
+    '111111',
+    '2025-06-26 09:06:39',
+    '2025-06-26 08:06:39',
+    '2025-06-26 08:06:39'
+  ),
+(
+    51,
+    'jaafarmahmood4419@gmail.com',
+    '111111',
+    '2025-06-26 10:01:57',
+    '2025-06-26 09:01:57',
+    '2025-06-26 09:01:57'
+  ),
+(
+    52,
+    'jafarmahmoud535@gllmail.com',
+    '111111',
+    '2025-06-26 10:08:43',
+    '2025-06-26 09:08:43',
+    '2025-06-26 09:08:43'
+  ),
+(
+    57,
+    'jafarmahmoud532345678905@gmail.com',
+    '111111',
+    '2025-06-27 12:08:09',
+    '2025-06-27 11:08:09',
+    '2025-06-27 11:08:09'
+  ),
+(
+    61,
+    'hardlocas@gm1234567890ail.com',
+    '111111',
+    '2025-06-27 12:22:43',
+    '2025-06-27 11:22:43',
+    '2025-06-27 11:22:43'
+  ),
+(
+    65,
+    'hardlocas@gmail.com',
+    '111111',
+    '2025-07-10 20:06:42',
+    '2025-07-10 19:56:42',
+    '2025-07-10 19:56:42'
+  );
 /*!40000 ALTER TABLE `email_verification_codes` ENABLE KEYS */
 ;
 UNLOCK TABLES;
@@ -159,7 +232,7 @@ CREATE TABLE `locations` (
   PRIMARY KEY (`id`),
   KEY `locations_user_id_foreign` (`user_id`),
   CONSTRAINT `locations_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 14 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 16 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */
 ;
 --
@@ -176,6 +249,18 @@ VALUES (
     '5',
     '2025-06-19 20:12:20',
     '2025-06-19 20:22:22',
+    65,
+    '2',
+    NULL,
+    NULL
+  ),
+(
+    14,
+    'banias',
+    '4th street',
+    '5',
+    '2025-06-25 12:33:33',
+    '2025-06-25 12:33:33',
     65,
     '2',
     NULL,
@@ -197,7 +282,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 28 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 29 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */
 ;
 --
@@ -228,7 +313,12 @@ VALUES (1, '2014_10_12_000000_create_users_table', 1),
     7
   ),
 (26, '2024_05_16_105837_create_payments_table', 7),
-(27, '2025_06_17_190052_create_ratings_table', 8);
+(27, '2025_06_17_190052_create_ratings_table', 8),
+(
+    28,
+    '2025_07_13_233814_add_missing_fields_to_users_table',
+    9
+  );
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */
 ;
 UNLOCK TABLES;
@@ -253,7 +343,7 @@ CREATE TABLE `order_items` (
   KEY `order_items_product_id_foreign` (`product_id`),
   CONSTRAINT `order_items_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE,
   CONSTRAINT `order_items_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 55 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 59 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */
 ;
 --
@@ -298,6 +388,24 @@ VALUES (
     '2025-06-20 17:27:31',
     37,
     2
+  ),
+(
+    57,
+    2,
+    2900000.00,
+    '2025-07-10 19:29:13',
+    '2025-07-10 19:29:13',
+    39,
+    1
+  ),
+(
+    58,
+    2,
+    1400000.00,
+    '2025-07-10 19:29:13',
+    '2025-07-10 19:29:13',
+    39,
+    2
   );
 /*!40000 ALTER TABLE `order_items` ENABLE KEYS */
 ;
@@ -331,7 +439,7 @@ CREATE TABLE `orders` (
   KEY `orders_location_id_foreign` (`location_id`),
   CONSTRAINT `orders_location_id_foreign` FOREIGN KEY (`location_id`) REFERENCES `locations` (`id`) ON DELETE CASCADE,
   CONSTRAINT `orders_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 38 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 40 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */
 ;
 --
@@ -360,6 +468,16 @@ VALUES (
     '2025-06-20 17:27:31',
     65,
     12
+  ),
+(
+    39,
+    '12/3/2025 , 11:15 AM',
+    'Pending',
+    8600000.00,
+    '2025-07-10 19:29:13',
+    '2025-07-10 20:05:07',
+    71,
+    12
   );
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */
 ;
@@ -386,7 +504,7 @@ CREATE TABLE `payments` (
   KEY `payments_order_id_foreign` (`order_id`),
   CONSTRAINT `payments_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE,
   CONSTRAINT `payments_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */
 ;
 --
@@ -404,6 +522,26 @@ VALUES (
     13,
     '2025-06-20 09:57:54',
     '2025-06-20 09:57:54',
+    'Syriatel Cash'
+  ),
+(
+    2,
+    '345678908765',
+    '0931414419',
+    71,
+    39,
+    '2025-07-10 20:05:07',
+    '2025-07-10 20:05:07',
+    'Syriatel Cash'
+  ),
+(
+    3,
+    '345678908765',
+    '0931414419',
+    71,
+    39,
+    '2025-07-10 20:08:16',
+    '2025-07-10 20:08:16',
     'Syriatel Cash'
   );
 /*!40000 ALTER TABLE `payments` ENABLE KEYS */
@@ -488,13 +626,13 @@ VALUES (
     '{\"1\": \"black\", \"2\": \"white\", \"3\": \"brwon\"}',
     'Length: 206 cm\nWidth: 144 cm\nFootboard height: 40 cm\nHeadboard height: 85 cm\nMattress length: 200 cm\nMattress width: 140 cm',
     '/images/products/1714996633.SLATTUMbed.webp',
-    0,
+    1,
     1,
     3000000.00,
     100000.00,
-    8,
+    4,
     '2024-05-06 08:57:13',
-    '2025-06-20 17:27:31',
+    '2025-07-10 19:29:13',
     8
   ),
 (
@@ -509,9 +647,9 @@ VALUES (
     1,
     1500000.00,
     100000.00,
-    8,
+    4,
     '2024-05-06 09:02:35',
-    '2025-06-20 17:27:31',
+    '2025-07-10 19:29:13',
     8
   ),
 (
@@ -525,10 +663,10 @@ VALUES (
     0,
     1,
     5000000.00,
-    0.00,
+    200000.00,
     10,
     '2024-05-06 09:08:50',
-    '2024-05-06 09:08:50',
+    '2025-07-10 18:40:47',
     8
   ),
 (
@@ -542,10 +680,10 @@ VALUES (
     1,
     1,
     500000.00,
-    0.00,
+    100000.00,
     10,
     '2024-05-06 09:12:16',
-    '2024-05-06 09:12:16',
+    '2025-07-10 18:59:20',
     8
   ),
 (
@@ -602,7 +740,7 @@ VALUES (
 (
     9,
     'PAX / HASVIK Wardrobe',
-    'Keep it simple. Here\s a basic solution to get you started, and space for more interiors if you want to upgrade.',
+    'Keep it simple. Here`s a basic solution to get you started, and space for more interiors if you want to upgrade.',
     'Fabric:\n100% polyester (min. 90% recycled)\nHeadboard:\n100 % polyester, Polyester wadding, Steel, Polyurethane foam 20 kg/cu.m.\nFootboard:\nSteel\nBedside:\n100 % polyester, Particleboard, Steel\nMidbeam/ Cross rail/ Leg:\nSteel, Epoxy/polyester powder coating\nLining:\n100% polypropylene',
     '{\"1\": \"black\", \"2\": \"white\", \"3\": \"brwon\"}',
     'Length: 206 cm\nWidth: 144 cm\nFootboard height: 40 cm\nHeadboard height: 85 cm\nMattress length: 200 cm\nMattress width: 140 cm',
@@ -610,10 +748,10 @@ VALUES (
     0,
     1,
     6000000.00,
-    0.00,
+    100000.00,
     10,
     '2024-05-06 10:22:09',
-    '2024-05-17 17:01:59',
+    '2025-07-10 19:20:29',
     8
   ),
 (
@@ -624,7 +762,7 @@ VALUES (
     '{\"1\": \"black\", \"2\": \"white\", \"3\": \"brwon\"}',
     'Length: 206 cm\nWidth: 144 cm\nFootboard height: 40 cm\nHeadboard height: 85 cm\nMattress length: 200 cm\nMattress width: 140 cm',
     '/images/products/1715002053.hauga-chest-of-6-drawers.webp',
-    0,
+    1,
     1,
     2500000.00,
     0.00,
@@ -726,7 +864,7 @@ VALUES (
     '{\"1\": \"black\", \"2\": \"white\", \"3\": \"brwon\"}',
     'Length: 206 cm\nWidth: 144 cm\nFootboard height: 40 cm\nHeadboard height: 85 cm\nMattress length: 200 cm\nMattress width: 140 cm',
     '/images/products/1715012402.friheten-corner-sofa-bed-with-storage.webp',
-    0,
+    1,
     1,
     6000000.00,
     100000.00,
@@ -760,7 +898,7 @@ VALUES (
     '{\"1\": \"black\", \"2\": \"white\", \"3\": \"brwon\"}',
     'Length: 206 cm\nWidth: 144 cm\nFootboard height: 40 cm\nHeadboard height: 85 cm\nMattress length: 200 cm\nMattress width: 140 cm',
     '/images/products/1715012723.glostad-2-seat-sofa.webp',
-    0,
+    1,
     1,
     2000000.00,
     0.00,
@@ -777,7 +915,7 @@ VALUES (
     '{\"1\": \"black\", \"2\": \"white\", \"3\": \"brwon\"}',
     'Length: 206 cm\nWidth: 144 cm\nFootboard height: 40 cm\nHeadboard height: 85 cm\nMattress length: 200 cm\nMattress width: 140 cm',
     '/images/products/1715012842.ektorp-3-seat-sofa-hakebo.webp',
-    0,
+    1,
     1,
     6000000.00,
     0.00,
@@ -828,7 +966,7 @@ VALUES (
     '{\"1\": \"black\", \"2\": \"white\", \"3\": \"brwon\"}',
     'Length: 206 cm\nWidth: 144 cm\nFootboard height: 40 cm\nHeadboard height: 85 cm\nMattress length: 200 cm\nMattress width: 140 cm',
     '/images/products/1715013665.fjaellbo-tv-bench.webp',
-    0,
+    1,
     1,
     3000000.00,
     0.00,
@@ -879,7 +1017,7 @@ VALUES (
     '{\"1\": \"black\", \"2\": \"white\", \"3\": \"brwon\"}',
     'Length: 206 cm\nWidth: 144 cm\nFootboard height: 40 cm\nHeadboard height: 85 cm\nMattress length: 200 cm\nMattress width: 140 cm',
     '/images/products/1715014370.vittsjoe-coffee-table.webp',
-    0,
+    1,
     1,
     400000.00,
     0.00,
@@ -1105,9 +1243,10 @@ CREATE TABLE `users` (
   `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
+  `wants_notifications` tinyint DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_email_unique` (`email`)
-) ENGINE = InnoDB AUTO_INCREMENT = 67 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 99 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */
 ;
 --
@@ -1124,11 +1263,208 @@ VALUES (
     'jafarmahmoud535@gmail.com',
     '+963931414419',
     '2025-06-19 17:22:53',
-    '$2y$10$EBlthPjdkdCdZNLoP9oOSOZC3WGGsnlp9cOqV9vE4lzNAPLfNPyQW',
+    '$2y$10$5QOEEW0aW3zPR2zOD2cAIuTKzdplzK5p7NnVALI1GXO2uzy0GzwO6',
     1,
     NULL,
     '2025-06-19 17:17:10',
-    '2025-06-23 06:21:11'
+    '2025-06-26 09:28:28',
+    1
+  ),
+(
+    71,
+    'Jaafar',
+    'Mahmood',
+    'jaafarmahmood4419@gmail.com',
+    NULL,
+    '2025-06-25 15:31:37',
+    '$2y$10$mr2SIitzhkkkde0e213DeeXZBe5Nugn9MyT3G/SyCWLjrxxMAHXqC',
+    0,
+    NULL,
+    '2025-06-25 15:26:33',
+    '2025-06-25 15:31:37',
+    1
+  ),
+(
+    81,
+    'Jafar',
+    'Mahmoud',
+    'hardlocas@gm1234567890ail.com',
+    NULL,
+    NULL,
+    '$2y$10$NBlXMCyoxcTpYzpWypy4E.oWtRudgrV5v7EQkaSp57uwMG1bCorR2',
+    0,
+    NULL,
+    '2025-06-27 11:22:43',
+    '2025-06-27 11:22:43',
+    1
+  ),
+(
+    84,
+    'hg',
+    'ut',
+    'hardlocas@g1mail.com',
+    NULL,
+    '2025-06-25 15:31:37',
+    '$2y$10$K5iHI4upjAkZV2UPDrELPOsDqpRRY/7S7AIejnC6s9PBWJHC1cj9G',
+    0,
+    NULL,
+    '2025-07-10 18:33:54',
+    '2025-07-10 18:33:54',
+    1
+  ),
+(
+    85,
+    'hg',
+    'ut',
+    'hardlocas@g2mail.com',
+    NULL,
+    '2025-06-25 15:31:37',
+    '$2y$10$K5iHI4upjAkZV2UPDrELPOsDqpRRY/7S7AIejnC6s9PBWJHC1cj9G',
+    0,
+    NULL,
+    '2025-07-10 18:33:54',
+    '2025-07-10 18:33:54',
+    1
+  ),
+(
+    87,
+    'hg',
+    'ut',
+    'hardlocas@g3mail.com',
+    NULL,
+    '2025-06-25 15:31:37',
+    '$2y$10$K5iHI4upjAkZV2UPDrELPOsDqpRRY/7S7AIejnC6s9PBWJHC1cj9G',
+    0,
+    NULL,
+    '2025-07-10 18:33:54',
+    '2025-07-10 18:33:54',
+    0
+  ),
+(
+    88,
+    'hg',
+    'ut',
+    'hardlocas@g4mail.com',
+    NULL,
+    '2025-06-25 15:31:37',
+    '$2y$10$K5iHI4upjAkZV2UPDrELPOsDqpRRY/7S7AIejnC6s9PBWJHC1cj9G',
+    0,
+    NULL,
+    '2025-07-10 18:33:54',
+    '2025-07-10 18:33:54',
+    0
+  ),
+(
+    89,
+    'hg',
+    'ut',
+    'hardlocas@g5mail.com',
+    NULL,
+    '2025-06-25 15:31:37',
+    '$2y$10$K5iHI4upjAkZV2UPDrELPOsDqpRRY/7S7AIejnC6s9PBWJHC1cj9G',
+    0,
+    NULL,
+    '2025-07-10 18:33:54',
+    '2025-07-10 18:33:54',
+    0
+  ),
+(
+    90,
+    'hg',
+    'ut',
+    'hardlocas@g6mail.com',
+    NULL,
+    '2025-06-25 15:31:37',
+    '$2y$10$K5iHI4upjAkZV2UPDrELPOsDqpRRY/7S7AIejnC6s9PBWJHC1cj9G',
+    0,
+    NULL,
+    '2025-07-10 18:33:54',
+    '2025-07-10 18:33:54',
+    0
+  ),
+(
+    92,
+    'hg',
+    'ut',
+    'hardlocas@g7mail.com',
+    NULL,
+    '2025-06-25 15:31:37',
+    '$2y$10$K5iHI4upjAkZV2UPDrELPOsDqpRRY/7S7AIejnC6s9PBWJHC1cj9G',
+    0,
+    NULL,
+    '2025-07-10 18:33:54',
+    '2025-07-10 18:33:54',
+    0
+  ),
+(
+    93,
+    'hg',
+    'ut',
+    'hardlocas@g8mail.com',
+    NULL,
+    '2025-06-25 15:31:37',
+    '$2y$10$K5iHI4upjAkZV2UPDrELPOsDqpRRY/7S7AIejnC6s9PBWJHC1cj9G',
+    0,
+    NULL,
+    '2025-07-10 18:33:54',
+    '2025-07-10 18:33:54',
+    0
+  ),
+(
+    94,
+    'hg',
+    'ut',
+    'hardlocas@g9mail.com',
+    NULL,
+    '2025-06-25 15:31:37',
+    '$2y$10$K5iHI4upjAkZV2UPDrELPOsDqpRRY/7S7AIejnC6s9PBWJHC1cj9G',
+    0,
+    NULL,
+    '2025-07-10 18:33:54',
+    '2025-07-10 18:33:54',
+    0
+  ),
+(
+    95,
+    'hg',
+    'ut',
+    'hardlocas@g9123mail.com',
+    NULL,
+    '2025-06-25 15:31:37',
+    '$2y$10$K5iHI4upjAkZV2UPDrELPOsDqpRRY/7S7AIejnC6s9PBWJHC1cj9G',
+    0,
+    NULL,
+    '2025-07-10 18:33:54',
+    '2025-07-10 18:33:54',
+    0
+  ),
+(
+    96,
+    'Jafar',
+    'Mahmoud',
+    'hardlocas@gmail.com',
+    NULL,
+    NULL,
+    '$2y$10$67XcfjcCyR3WH0BrjlXvEO8y51L/4hbZP0skq6nY9PFiTq4fnAo1e',
+    0,
+    NULL,
+    '2025-07-10 19:54:24',
+    '2025-07-10 19:54:24',
+    0
+  ),
+(
+    97,
+    'مدير النظام',
+    'مدير النظام',
+    'admin@jamfurniture.com',
+    NULL,
+    '2025-07-13 20:41:10',
+    '$2y$10$H/tnAURx0kKU6.IQE1IYfeJhmet6vkyydDLdzv4YHWyYm7W/eBl5a',
+    1,
+    NULL,
+    '2025-07-13 20:30:13',
+    '2025-07-13 20:41:10',
+    0
   );
 /*!40000 ALTER TABLE `users` ENABLE KEYS */
 ;
@@ -1149,4 +1485,4 @@ UNLOCK TABLES;
 ;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */
 ;
--- Dump completed on 2025-06-23 12:29:16
+-- Dump completed on 2025-07-20 13:58:27
