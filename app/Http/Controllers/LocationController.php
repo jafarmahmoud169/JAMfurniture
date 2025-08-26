@@ -42,9 +42,9 @@ class LocationController extends Controller
                 'city' => 'required',
                 'street' => 'required',
                 'building' => 'required',
-                'more_details' => 'required',
-                'zip_code' => 'required',
-                'apartment_number' => 'required'
+                // 'more_details' => 'nullable',
+                // 'zip_code' => 'nullable',
+                // 'apartment_number' => 'nullabla'
             ]);
             if ($validator->fails()) {
                 return response()->json([
@@ -84,9 +84,9 @@ class LocationController extends Controller
                 'city' => 'required',
                 'street' => 'required',
                 'building' => 'required',
-                'more_details' => 'required',
-                'zip_code' => 'required',
-                'apartment_number' => 'required'
+                // 'more_details' => 'nullable',
+                // 'zip_code' => 'nullable',
+                // 'apartment_number' => 'nullable'
             ]);
             if ($validator->fails()) {
                 return response()->json([
