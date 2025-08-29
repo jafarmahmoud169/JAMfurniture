@@ -13,6 +13,7 @@ use Exception;
 use Auth;
 class OrderController extends Controller
 {
+
     public function check_availability($product_id, $quantity)
     {
         $product = product::find($product_id);
@@ -27,14 +28,13 @@ class OrderController extends Controller
         if ($product->amount < $quantity) {
             return response()->json([
                 'status' => 'failed',
-                'message' => 'The quantity of product ' . $product_id . ' is not available',
-                'product_id' => $product_id,
-                'available_quantity' => $product->amount
+                'message' => 'Only ' . $product->amount . ' units of (' . $product->name . ') are available'
             ], 400);
         }
 
         return null;
     }
+
 
 
     /**
