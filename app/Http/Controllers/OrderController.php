@@ -124,7 +124,8 @@ class OrderController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Order added'
+                'message' => 'Order added',
+                'order_id'=>$order->id
             ], 201);
         } catch (Exception $e) {
             return response()->json([
