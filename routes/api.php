@@ -79,7 +79,7 @@ Route::controller(OrderController::class)->group(function () {
     Route::get('/order/show/{id}', 'show')->middleware(['auth', 'verified']);
     Route::post('/order/create', 'store')->middleware(['auth', 'verified']);
     Route::get('/order/get_user_orders', 'get_user_orders')->middleware(['auth', 'verified']);
-    Route::delete('/order/delete/{id}', 'destroy')->middleware(['auth', 'verified']);
+    Route::post('/order/cancel/{id}', 'cancel')->middleware(['auth', 'verified']);
 
 });
 Route::post('/order/pay/{id}',[PaymentController::class,'pay_for_order'])->middleware(['auth', 'verified']);

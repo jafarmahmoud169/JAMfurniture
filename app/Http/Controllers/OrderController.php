@@ -154,12 +154,12 @@ class OrderController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'user have no orders yet',
-                'orders'=>null
+                'orders' => null
             ], 200);
     }
 
 
-    public function destroy($id)
+    public function cancel($id)
     {
         $order = order::find($id);
 
@@ -170,11 +170,25 @@ class OrderController extends Controller
                     'message' => 'You do not have permission to delete this order'
                 ], 403);
             } else {
-                $order->delete();
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'order deleted'
-                ], 200);
+                if ($order->status == "Unpaid") {
+                    $order->status = "Canceled";
+                    $order->save();
+
+                    // Send email notification to user
+                    Mail::to($order->user->email)->send(
+                        new OrderStatusChangedMail($order, 'Canceled')
+                    );
+
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'order canceled'
+                    ], 200);
+                }else {
+                    return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Sorry , You can no longer cancel this order'
+                ], 403);
+                }
             }
         } else
             return response()->json([
