@@ -43,25 +43,33 @@ class OrderController extends Controller
     public function show($id)
     {
         $order = order::find($id);
+        $user = auth()->user();
 
 
         if ($order) {
-            $order->payment;
-            $order->location;
-            foreach ($order->items as $item) {
-                $item->product;
-            }
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Order information',
-                'order' => $order,
-                //'items' => $items
-            ], 200);
-        } else
+            if (($order->user == $user) || ($user->is_admin == 1)) {
+                $order->payment;
+                $order->location;
+                foreach ($order->items as $item) {
+                    $item->product;
+                }
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Order information',
+                    'order' => $order,
+                ], 200);
+            } else
             return response()->json([
                 'status' => 'failed',
-                'message' => 'Order not found'
-            ], 400);
+                'message' => 'You do not have permission to see this order'
+            ], 403);
+        } else {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Order not found'
+                ], 400);
+        }
+
     }
 
 
@@ -125,7 +133,7 @@ class OrderController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Order added',
-                'order_id'=>$order->id
+                'order_id' => $order->id
             ], 201);
         } catch (Exception $e) {
             return response()->json([
@@ -184,11 +192,11 @@ class OrderController extends Controller
                         'status' => 'success',
                         'message' => 'order canceled'
                     ], 200);
-                }else {
+                } else {
                     return response()->json([
-                    'status' => 'failed',
-                    'message' => 'Sorry , You can no longer cancel this order'
-                ], 403);
+                        'status' => 'failed',
+                        'message' => 'Sorry , You can no longer cancel this order'
+                    ], 403);
                 }
             }
         } else
