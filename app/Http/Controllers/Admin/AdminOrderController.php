@@ -58,7 +58,7 @@ public function change_order_status(Request $request, $id)
      */
     public function index()
     {
-        $orders = order::simplePaginate(10);
+        $orders = order::Paginate(10);
         if ($orders) {
             foreach ($orders as $order) {
                 $order->payment;

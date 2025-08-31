@@ -250,7 +250,9 @@ class AdminProductController extends Controller
         $product->save();
 
         // Trigger queued job
+        if ($request->discount !=0) {
         SendDiscountNotification::dispatch($product);
+        }
 
         return response()->json([
             'status' => 'success',
